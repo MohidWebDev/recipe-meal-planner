@@ -1,13 +1,17 @@
+import { BookOpen, Plus, SearchX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getErrorMessage } from '../api/axios';
 import { getRecipes } from '../api/recipe.api';
-import Loader from '../components/common/Loader';
+import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/common/PageHeader';
 import Pagination from '../components/common/Pagination';
 import SearchBar from '../components/common/SearchBar';
 import RecipeCard from '../components/recipes/RecipeCard';
+import RecipeCardSkeleton from '../components/recipes/RecipeCardSkeleton';
 import RecipeFilters from '../components/recipes/RecipeFilters';
 import useDebounce from '../hooks/useDebounce';
+import { scrollToTop } from '../utils/smoothScroll';
 
 const PAGE_SIZE = 9;
 const FILTER_KEYS = ['search', 'cuisine', 'maxTime', 'ingredient', 'tag', 'sort', 'page'];
@@ -102,68 +106,75 @@ export default function Recipes() {
 
   const goToPage = (nextPage) => {
     updateParams({ page: nextPage > 1 ? nextPage : '' }, { resetPage: false });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const hasActiveFilters = Object.entries(filters).some(([key, value]) => key !== 'sort' && value);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">My recipes</h1>
-          <p className="text-sm text-slate-500">
-            {loading ? 'Loading…' : `${result.total} recipe${result.total === 1 ? '' : 's'}${hasActiveFilters ? ' found' : ''}`}
-          </p>
-        </div>
-        <Link to="/recipes/new" className="btn-primary">
-          + New recipe
-        </Link>
-      </div>
+      <PageHeader
+        eyebrow="Your cookbook"
+        title="My recipes"
+        subtitle={
+          loading
+            ? 'Loading…'
+            : `${result.total} recipe${result.total === 1 ? '' : 's'}${hasActiveFilters ? ' found' : ' saved'}`
+        }
+        actions={
+          <Link to="/recipes/new" className="btn-accent">
+            <Plus className="h-4 w-4" aria-hidden="true" /> New recipe
+          </Link>
+        }
+      />
 
-      <div className="card space-y-4 p-4">
+      <div className="card space-y-4 p-4 sm:p-5">
         <SearchBar value={searchInput} onChange={setSearchInput} placeholder="Search recipes by title…" />
         <RecipeFilters filters={{ ...filters, ingredient: ingredientInput }} onChange={handleFilterChange} onReset={resetFilters} />
       </div>
 
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="alert-error">
           {error}
         </div>
       )}
 
       {loading ? (
-        <Loader label="Loading recipes…" />
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" role="status" aria-label="Loading recipes">
+          {Array.from({ length: 6 }, (_, i) => (
+            <RecipeCardSkeleton key={i} />
+          ))}
+        </div>
       ) : result.data.length === 0 ? (
-        !error && (
-          <div className="card flex flex-col items-center px-6 py-14 text-center">
-            <span className="text-4xl" aria-hidden="true">
-              {hasActiveFilters ? '🔍' : '📖'}
-            </span>
-            <h2 className="mt-3 font-semibold text-slate-900">
-              {hasActiveFilters ? 'No recipes match your filters' : 'No recipes yet'}
-            </h2>
-            <p className="mt-1 max-w-sm text-sm text-slate-500">
-              {hasActiveFilters
-                ? 'Try a different search term or clear the filters.'
-                : 'Add your first recipe and start planning your week.'}
-            </p>
-            {hasActiveFilters ? (
-              <button type="button" className="btn-secondary mt-5" onClick={resetFilters}>
+        !error &&
+        (hasActiveFilters ? (
+          <EmptyState
+            icon={SearchX}
+            title="No recipes match your filters"
+            message="Try a different search term or clear the filters."
+            action={
+              <button type="button" className="btn-secondary" onClick={resetFilters}>
                 Clear filters
               </button>
-            ) : (
-              <Link to="/recipes/new" className="btn-primary mt-5">
-                Add a recipe
+            }
+          />
+        ) : (
+          <EmptyState
+            icon={BookOpen}
+            title="No recipes yet"
+            message="Add your first recipe and start planning your week."
+            action={
+              <Link to="/recipes/new" className="btn-accent">
+                <Plus className="h-4 w-4" aria-hidden="true" /> Add a recipe
               </Link>
-            )}
-          </div>
-        )
+            }
+          />
+        ))
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {result.data.map((recipe) => (
-              <RecipeCard key={recipe._id} recipe={recipe} />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {result.data.map((recipe, index) => (
+              <RecipeCard key={recipe._id} recipe={recipe} index={index} />
             ))}
           </div>
           <Pagination page={result.page} pages={result.pages} onPageChange={goToPage} />

@@ -1,3 +1,4 @@
+import { ArrowLeft, Clock, Pencil, ShoppingBasket, Trash2, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../api/axios';
@@ -5,7 +6,7 @@ import { deleteRecipe, getRecipe } from '../api/recipe.api';
 import ConfirmModal from '../components/common/ConfirmModal';
 import Loader from '../components/common/Loader';
 import useToast from '../hooks/useToast';
-import { formatQuantity } from '../utils/constants';
+import { formatQuantity, getCuisineEmoji } from '../utils/constants';
 import NotFound from './NotFound';
 
 export default function RecipeDetail() {
@@ -57,72 +58,99 @@ export default function RecipeDetail() {
       return <NotFound title="Recipe not found" message="This recipe doesn't exist or belongs to another account." />;
     }
     return (
-      <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <div role="alert" className="alert-error">
         {getErrorMessage(error)}
       </div>
     );
   }
 
   const { title, description, cuisine, cookTime, servings, tags = [], ingredients = [], instructions } = recipe;
-  const steps = (instructions || '').split('\n').map((line) => line.trim()).filter(Boolean);
+  const steps = (instructions || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const stats = [
+    { icon: Clock, label: 'Cook time', value: `${cookTime} min` },
+    { icon: Users, label: 'Servings', value: servings },
+    { icon: ShoppingBasket, label: 'Ingredients', value: ingredients.length },
+  ];
 
   return (
     <article className="space-y-6">
-      <Link to="/recipes" className="text-sm font-medium text-emerald-700 hover:underline">
-        ← Back to recipes
+      <Link to="/recipes" className="link inline-flex items-center gap-1.5 text-sm">
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to recipes
       </Link>
 
-      <header className="card p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            {cuisine && <span className="badge mb-2 bg-emerald-50 text-emerald-700">{cuisine}</span>}
-            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{title}</h1>
-            {description && <p className="mt-2 max-w-2xl text-slate-600">{description}</p>}
-          </div>
-          <div className="flex shrink-0 gap-2">
-            <Link to={`/recipes/${id}/edit`} className="btn-secondary">
-              Edit
-            </Link>
-            <button type="button" className="btn-danger" onClick={() => setConfirmOpen(true)}>
-              Delete
-            </button>
+      <header className="card relative animate-fade-up overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_120%_at_0%_0%,rgba(21,88,201,0.35),transparent_60%),radial-gradient(50%_90%_at_100%_100%,rgba(212,255,36,0.1),transparent_60%)]"
+          aria-hidden="true"
+        />
+        <span
+          className="pointer-events-none absolute -top-4 right-6 hidden text-[9rem] opacity-90 drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)] sm:block"
+          aria-hidden="true"
+        >
+          {getCuisineEmoji(cuisine)}
+        </span>
+
+        <div className="relative p-6 sm:p-8">
+          <div className="flex flex-col gap-5 sm:pr-40">
+            <div>
+              {cuisine && <span className="badge-accent mb-3">{cuisine}</span>}
+              <h1 className="text-3xl font-bold text-fg sm:text-4xl">{title}</h1>
+              {description && <p className="mt-3 max-w-2xl leading-relaxed text-muted">{description}</p>}
+            </div>
+
+            <dl className="flex flex-wrap gap-3">
+              {stats.map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-center gap-3 rounded-xl border border-line bg-ink/50 px-4 py-2.5">
+                  <Icon className="h-5 w-5 text-brand-light" aria-hidden="true" />
+                  <div>
+                    <dt className="text-xs text-subtle">{label}</dt>
+                    <dd className="font-display font-semibold text-fg">{value}</dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    to={`/recipes?tag=${encodeURIComponent(tag)}`}
+                    className="badge transition hover:border-accent/40 hover:text-accent"
+                  >
+                    #{tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Link to={`/recipes/${id}/edit`} className="btn-primary">
+                <Pencil className="h-4 w-4" aria-hidden="true" /> Edit
+              </Link>
+              <button type="button" className="btn-secondary hover:border-danger/50 hover:text-danger" onClick={() => setConfirmOpen(true)}>
+                <Trash2 className="h-4 w-4" aria-hidden="true" /> Delete
+              </button>
+            </div>
           </div>
         </div>
-
-        <dl className="mt-5 flex flex-wrap gap-6 border-t border-slate-100 pt-5 text-sm">
-          <div>
-            <dt className="text-slate-500">Cook time</dt>
-            <dd className="font-semibold text-slate-900">{cookTime} min</dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Servings</dt>
-            <dd className="font-semibold text-slate-900">{servings}</dd>
-          </div>
-          <div>
-            <dt className="text-slate-500">Ingredients</dt>
-            <dd className="font-semibold text-slate-900">{ingredients.length}</dd>
-          </div>
-        </dl>
-
-        {tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {tags.map((tag) => (
-              <Link key={tag} to={`/recipes?tag=${encodeURIComponent(tag)}`} className="badge hover:bg-emerald-50 hover:text-emerald-700">
-                #{tag}
-              </Link>
-            ))}
-          </div>
-        )}
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-        <section className="card p-6">
-          <h2 className="mb-3 text-lg font-semibold text-slate-900">Ingredients</h2>
-          <ul className="divide-y divide-slate-100">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.8fr)]">
+        <section className="card animate-fade-up p-6 [animation-delay:60ms]">
+          <h2 className="mb-4 text-xl font-semibold text-fg">Ingredients</h2>
+          <ul className="divide-y divide-line">
             {ingredients.map((ingredient, index) => (
-              <li key={`${ingredient.name}-${index}`} className="flex justify-between gap-4 py-2 text-sm">
-                <span className="text-slate-800">{ingredient.name}</span>
-                <span className="shrink-0 font-medium text-slate-600">
+              <li key={`${ingredient.name}-${index}`} className="flex items-center justify-between gap-4 py-2.5 text-sm">
+                <span className="flex items-center gap-3 text-fg">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+                  {ingredient.name}
+                </span>
+                <span className="shrink-0 font-semibold text-brand-light">
                   {formatQuantity(ingredient.quantity)} {ingredient.unit}
                 </span>
               </li>
@@ -130,21 +158,21 @@ export default function RecipeDetail() {
           </ul>
         </section>
 
-        <section className="card p-6">
-          <h2 className="mb-3 text-lg font-semibold text-slate-900">Instructions</h2>
+        <section className="card animate-fade-up p-6 [animation-delay:120ms]">
+          <h2 className="mb-4 text-xl font-semibold text-fg">Instructions</h2>
           {steps.length ? (
-            <ol className="space-y-3 text-sm leading-relaxed text-slate-700">
+            <ol className="space-y-4 text-sm leading-relaxed text-muted">
               {steps.map((step, index) => (
-                <li key={index} className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+                <li key={index} className="flex gap-4">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand font-display text-xs font-bold text-white">
                     {index + 1}
                   </span>
-                  <span className="pt-0.5">{step.replace(/^\d+[.)]\s*/, '')}</span>
+                  <span className="pt-1 text-fg/90">{step.replace(/^\d+[.)]\s*/, '')}</span>
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="text-sm text-slate-400 italic">No instructions added yet.</p>
+            <p className="text-sm text-subtle italic">No instructions added yet.</p>
           )}
         </section>
       </div>

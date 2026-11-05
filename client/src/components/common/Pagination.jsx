@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 /** Builds [1, '…', 4, 5, 6, '…', 10] style page lists. */
 const getPageItems = (page, pages) => {
   if (pages <= 7) return Array.from({ length: pages }, (_, i) => i + 1);
@@ -14,21 +16,17 @@ const getPageItems = (page, pages) => {
 export default function Pagination({ page, pages, onPageChange }) {
   if (!pages || pages <= 1) return null;
 
-  const baseBtn = 'min-w-9 rounded-lg px-3 py-1.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50';
+  const base =
+    'inline-flex h-10 min-w-10 items-center justify-center gap-1 rounded-xl px-3 text-sm font-semibold transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-40';
 
   return (
-    <nav className="flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
-      <button
-        type="button"
-        className={`${baseBtn} text-slate-600 hover:bg-slate-100`}
-        onClick={() => onPageChange(page - 1)}
-        disabled={page <= 1}
-      >
-        ‹ Prev
+    <nav className="flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
+      <button type="button" className={`${base} text-muted hover:bg-raised hover:text-fg`} onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        <ChevronLeft className="h-4 w-4" aria-hidden="true" /> Prev
       </button>
       {getPageItems(page, pages).map((item, index) =>
         item === '…' ? (
-          <span key={`gap-${index}`} className="px-2 text-slate-400">
+          <span key={`gap-${index}`} className="px-1 text-subtle">
             …
           </span>
         ) : (
@@ -37,19 +35,16 @@ export default function Pagination({ page, pages, onPageChange }) {
             key={item}
             onClick={() => onPageChange(item)}
             aria-current={item === page ? 'page' : undefined}
-            className={`${baseBtn} ${item === page ? 'bg-emerald-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+            className={`${base} ${
+              item === page ? 'bg-accent text-ink shadow-[0_6px_20px_-8px_rgba(212,255,36,0.6)]' : 'border border-line text-muted hover:border-line-strong hover:text-fg'
+            }`}
           >
             {item}
           </button>
         )
       )}
-      <button
-        type="button"
-        className={`${baseBtn} text-slate-600 hover:bg-slate-100`}
-        onClick={() => onPageChange(page + 1)}
-        disabled={page >= pages}
-      >
-        Next ›
+      <button type="button" className={`${base} text-muted hover:bg-raised hover:text-fg`} onClick={() => onPageChange(page + 1)} disabled={page >= pages}>
+        Next <ChevronRight className="h-4 w-4" aria-hidden="true" />
       </button>
     </nav>
   );

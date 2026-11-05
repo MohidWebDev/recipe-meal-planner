@@ -1,3 +1,4 @@
+import { TriangleAlert } from 'lucide-react';
 import Modal from './Modal';
 
 export default function ConfirmModal({
@@ -28,7 +29,14 @@ export default function ConfirmModal({
         </>
       }
     >
-      <p className="text-sm text-slate-600">{message}</p>
+      <div className="flex gap-3">
+        {danger && (
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-danger/10 text-danger">
+            <TriangleAlert className="h-5 w-5" aria-hidden="true" />
+          </span>
+        )}
+        <p className="text-sm leading-relaxed text-muted">{message}</p>
+      </div>
     </Modal>
   );
 }

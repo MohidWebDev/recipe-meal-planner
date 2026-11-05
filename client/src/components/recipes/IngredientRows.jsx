@@ -1,3 +1,4 @@
+import { Plus, X } from 'lucide-react';
 import { COMMON_UNITS } from '../../utils/constants';
 
 /** Dynamic list of { name, quantity, unit } rows used inside RecipeForm. */
@@ -10,7 +11,7 @@ export default function IngredientRows({ ingredients, errors = {}, onChange, onA
         ))}
       </datalist>
 
-      <div className="hidden grid-cols-[1fr_7rem_7rem_2.5rem] gap-2 text-xs font-medium tracking-wide text-slate-500 uppercase sm:grid">
+      <div className="hidden grid-cols-[1fr_7rem_7rem_2.5rem] gap-2 px-1 text-xs font-semibold tracking-wider text-subtle uppercase sm:grid">
         <span>Ingredient</span>
         <span>Quantity</span>
         <span>Unit</span>
@@ -23,7 +24,7 @@ export default function IngredientRows({ ingredients, errors = {}, onChange, onA
         const unitError = errors[`ingredients[${index}].unit`];
 
         return (
-          <div key={ingredient.key} className="rounded-lg border border-slate-200 p-3 sm:border-0 sm:p-0">
+          <div key={ingredient.key} className="animate-fade-up rounded-xl border border-line p-3 sm:border-0 sm:p-0">
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-[1fr_7rem_7rem_2.5rem]">
               <div className="col-span-2 sm:col-span-1">
                 <label className="sr-only" htmlFor={`ing-name-${index}`}>
@@ -69,13 +70,13 @@ export default function IngredientRows({ ingredients, errors = {}, onChange, onA
                 </div>
                 <button
                   type="button"
-                  className="btn-ghost px-2 text-lg text-slate-400 hover:text-red-600"
+                  className="icon-btn h-[42px] w-10 shrink-0 hover:bg-danger/10 hover:text-danger"
                   onClick={() => onRemove(index)}
                   disabled={ingredients.length === 1}
                   aria-label={`Remove ingredient ${index + 1}`}
                   title="Remove ingredient"
                 >
-                  ×
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -87,7 +88,7 @@ export default function IngredientRows({ ingredients, errors = {}, onChange, onA
       })}
 
       <button type="button" className="btn-secondary" onClick={onAdd}>
-        + Add ingredient
+        <Plus className="h-4 w-4" aria-hidden="true" /> Add ingredient
       </button>
     </div>
   );

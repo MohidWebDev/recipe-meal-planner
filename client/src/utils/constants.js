@@ -15,11 +15,29 @@ export const CUISINES = [
 ];
 
 export const MEAL_TYPES = [
-  { value: 'breakfast', label: 'Breakfast', icon: '🍳' },
-  { value: 'lunch', label: 'Lunch', icon: '🥗' },
-  { value: 'dinner', label: 'Dinner', icon: '🍝' },
-  { value: 'snack', label: 'Snack', icon: '🍎' },
+  { value: 'breakfast', label: 'Breakfast' },
+  { value: 'lunch', label: 'Lunch' },
+  { value: 'dinner', label: 'Dinner' },
+  { value: 'snack', label: 'Snack' },
 ];
+
+/** Emoji used on the recipe "cover" since recipes have no photos yet. */
+const CUISINE_EMOJI = {
+  american: '🍔',
+  chinese: '🥡',
+  french: '🥐',
+  greek: '🫒',
+  indian: '🍛',
+  italian: '🍝',
+  japanese: '🍣',
+  mediterranean: '🥙',
+  mexican: '🌮',
+  'middle eastern': '🧆',
+  pakistani: '🍢',
+  thai: '🍜',
+};
+
+export const getCuisineEmoji = (cuisine = '') => CUISINE_EMOJI[cuisine.trim().toLowerCase()] ?? '🍽️';
 
 export const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest first' },

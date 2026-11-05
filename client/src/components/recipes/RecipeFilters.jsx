@@ -1,3 +1,4 @@
+import { RotateCcw, X } from 'lucide-react';
 import { CUISINES, MAX_TIME_OPTIONS, SORT_OPTIONS } from '../../utils/constants';
 
 export default function RecipeFilters({ filters, onChange, onReset }) {
@@ -60,21 +61,22 @@ export default function RecipeFilters({ filters, onChange, onReset }) {
       </div>
 
       {hasFilters && (
-        <div className="flex flex-wrap items-center gap-2 sm:col-span-2 lg:col-span-4">
+        <div className="flex animate-fade-in flex-wrap items-center gap-3 sm:col-span-2 lg:col-span-4">
           {filters.tag && (
-            <span className="badge bg-emerald-50 text-emerald-700">
-              Tag: #{filters.tag}
+            <span className="badge-accent">
+              #{filters.tag}
               <button
                 type="button"
-                className="ml-1.5 text-emerald-700/70 hover:text-emerald-900"
+                className="-mr-1 rounded-full p-0.5 transition hover:bg-accent/20"
                 onClick={() => onChange({ tag: '' })}
                 aria-label="Remove tag filter"
               >
-                ×
+                <X className="h-3 w-3" />
               </button>
             </span>
           )}
-          <button type="button" className="text-sm font-medium text-emerald-700 hover:underline" onClick={onReset}>
+          <button type="button" className="link inline-flex items-center gap-1.5 text-sm" onClick={onReset}>
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
             Clear all filters
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { Check, Clock, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getErrorMessage, getFieldErrors } from '../../api/axios';
@@ -116,6 +117,7 @@ export default function AddMealModal({ target, onClose, onSaved }) {
             Cancel
           </button>
           <button type="submit" form="meal-form" className="btn-primary" disabled={saving}>
+            {!saving && <Check className="h-4 w-4" aria-hidden="true" />}
             {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Add to plan'}
           </button>
         </>
@@ -123,7 +125,7 @@ export default function AddMealModal({ target, onClose, onSaved }) {
     >
       <form id="meal-form" onSubmit={handleSubmit} noValidate className="space-y-4">
         {formError && (
-          <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div role="alert" className="alert-error animate-fade-in">
             {formError}
           </div>
         )}
@@ -192,17 +194,21 @@ export default function AddMealModal({ target, onClose, onSaved }) {
           <SearchBar value={search} onChange={setSearch} placeholder="Search your recipes…" label="Search recipes" />
           {errors.recipe && <p className="field-error">{errors.recipe}</p>}
 
-          <div className="mt-2 max-h-64 overflow-y-auto rounded-lg border border-slate-200">
+          <div className="mt-2 max-h-64 overflow-y-auto overscroll-contain rounded-xl border border-line bg-ink/40" data-lenis-prevent>
             {loadingRecipes && recipeOptions.length === 0 ? (
-              <p className="p-4 text-sm text-slate-500">Loading recipes…</p>
+              <div className="space-y-2 p-3" aria-hidden="true">
+                {Array.from({ length: 4 }, (_, i) => (
+                  <div key={i} className="skeleton h-11" />
+                ))}
+              </div>
             ) : recipeOptions.length === 0 ? (
-              <div className="p-4 text-sm text-slate-500">
+              <div className="p-4 text-sm text-muted">
                 {debouncedSearch ? (
                   'No recipes match your search.'
                 ) : (
                   <>
                     You have no recipes yet.{' '}
-                    <Link to="/recipes/new" className="font-medium text-emerald-700 hover:underline">
+                    <Link to="/recipes/new" className="link">
                       Create one first
                     </Link>
                     .
@@ -210,7 +216,7 @@ export default function AddMealModal({ target, onClose, onSaved }) {
                 )}
               </div>
             ) : (
-              <ul className="divide-y divide-slate-100" role="radiogroup" aria-label="Recipes">
+              <ul className="divide-y divide-line" role="radiogroup" aria-label="Recipes">
                 {recipeOptions.map((recipe) => {
                   const selected = recipe._id === recipeId;
                   return (
@@ -220,26 +226,32 @@ export default function AddMealModal({ target, onClose, onSaved }) {
                         role="radio"
                         aria-checked={selected}
                         onClick={() => selectRecipe(recipe)}
-                        className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm transition ${
-                          selected ? 'bg-emerald-50' : 'hover:bg-slate-50'
+                        className={`flex w-full items-center justify-between gap-3 px-3.5 py-3 text-left text-sm transition duration-200 focus:outline-none focus-visible:bg-raised ${
+                          selected ? 'bg-brand/15' : 'hover:bg-raised'
                         }`}
                       >
                         <span className="min-w-0">
-                          <span className={`block truncate font-medium ${selected ? 'text-emerald-800' : 'text-slate-800'}`}>
-                            {recipe.title}
-                          </span>
-                          <span className="block text-xs text-slate-500">
-                            {[recipe.cuisine, recipe.cookTime && `${recipe.cookTime} min`, recipe.servings && `serves ${recipe.servings}`]
-                              .filter(Boolean)
-                              .join(' · ')}
+                          <span className={`block truncate font-medium ${selected ? 'text-accent' : 'text-fg'}`}>{recipe.title}</span>
+                          <span className="mt-0.5 flex items-center gap-3 text-xs text-muted">
+                            {recipe.cuisine && <span>{recipe.cuisine}</span>}
+                            {recipe.cookTime && (
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" aria-hidden="true" /> {recipe.cookTime} min
+                              </span>
+                            )}
+                            {recipe.servings && (
+                              <span className="flex items-center gap-1">
+                                <Users className="h-3 w-3" aria-hidden="true" /> serves {recipe.servings}
+                              </span>
+                            )}
                           </span>
                         </span>
                         <span
-                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs ${
-                            selected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition duration-200 ${
+                            selected ? 'scale-110 border-accent bg-accent text-ink' : 'border-line-strong'
                           }`}
                         >
-                          {selected && '✓'}
+                          {selected && <Check className="h-3 w-3" strokeWidth={3} aria-hidden="true" />}
                         </span>
                       </button>
                     </li>

@@ -1,11 +1,12 @@
+import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getErrorMessage } from '../api/axios';
 import { deleteMealPlan, getMealPlans } from '../api/mealPlan.api';
-import Loader from '../components/common/Loader';
+import PageHeader from '../components/common/PageHeader';
 import AddMealModal from '../components/planner/AddMealModal';
 import StatsCard from '../components/planner/StatsCard';
-import WeekGrid from '../components/planner/WeekGrid';
+import WeekGrid, { WeekGridSkeleton } from '../components/planner/WeekGrid';
 import useToast from '../hooks/useToast';
 import {
   addDays,
@@ -101,47 +102,43 @@ export default function Planner() {
     }
   };
 
+  const weekButton =
+    'inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-muted transition duration-200 hover:bg-raised hover:text-fg focus:outline-none focus-visible:bg-raised focus-visible:text-fg disabled:pointer-events-none disabled:text-subtle/60';
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Meal planner</h1>
-          <p className="text-sm text-slate-500">
-            {formatRange(days[0], days[6])} · {meals.length} meal{meals.length === 1 ? '' : 's'} planned
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex overflow-hidden rounded-lg border border-slate-300 bg-white">
-            <button type="button" className="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" onClick={() => changeWeek(-1)}>
-              ‹ Previous
-            </button>
-            <button
-              type="button"
-              className="border-x border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:text-slate-400"
-              onClick={() => changeWeek(0)}
-              disabled={isCurrentWeek}
-            >
-              This week
-            </button>
-            <button type="button" className="px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100" onClick={() => changeWeek(1)}>
-              Next ›
-            </button>
-          </div>
-          <Link to={`/shopping-list?from=${from}&to=${to}`} className="btn-primary">
-            🛒 Shopping list
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Weekly plan"
+        title="Meal planner"
+        subtitle={`${formatRange(days[0], days[6])} · ${meals.length} meal${meals.length === 1 ? '' : 's'} planned`}
+        actions={
+          <>
+            <div className="inline-flex overflow-hidden rounded-xl border border-line-strong bg-surface">
+              <button type="button" className={weekButton} onClick={() => changeWeek(-1)} aria-label="Previous week">
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" /> Previous
+              </button>
+              <button type="button" className={`${weekButton} border-x border-line-strong`} onClick={() => changeWeek(0)} disabled={isCurrentWeek}>
+                This week
+              </button>
+              <button type="button" className={weekButton} onClick={() => changeWeek(1)} aria-label="Next week">
+                Next <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+            <Link to={`/shopping-list?from=${from}&to=${to}`} className="btn-accent">
+              <ShoppingCart className="h-4 w-4" aria-hidden="true" /> Shopping list
+            </Link>
+          </>
+        }
+      />
 
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="alert-error">
           {error}
         </div>
       )}
 
       {loading ? (
-        <Loader label="Loading your week…" />
+        <WeekGridSkeleton />
       ) : (
         <WeekGrid
           days={days}

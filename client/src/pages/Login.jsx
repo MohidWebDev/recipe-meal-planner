@@ -1,6 +1,8 @@
+import { LogIn, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { getErrorMessage, getFieldErrors } from '../api/axios';
+import AuthLayout from '../components/common/AuthLayout';
 import useAuth from '../hooks/useAuth';
 import useToast from '../hooks/useToast';
 
@@ -59,15 +61,10 @@ export default function Login() {
   };
 
   return (
-    <div className="mx-auto max-w-md py-8">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
-        <p className="mt-1 text-sm text-slate-500">Log in to plan your meals for the week.</p>
-      </div>
-
-      <form onSubmit={handleSubmit} noValidate className="card space-y-4 p-6">
+    <AuthLayout title="Welcome back" subtitle="Log in to plan your meals for the week.">
+      <form onSubmit={handleSubmit} noValidate className="card space-y-5 p-6 sm:p-7">
         {serverError && (
-          <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div role="alert" className="alert-error animate-fade-in">
             {serverError}
           </div>
         )}
@@ -81,6 +78,7 @@ export default function Login() {
             name="email"
             type="email"
             autoComplete="email"
+            placeholder="you@example.com"
             className={`input ${errors.email ? 'input-error' : ''}`}
             value={values.email}
             onChange={handleChange}
@@ -97,6 +95,7 @@ export default function Login() {
             name="password"
             type="password"
             autoComplete="current-password"
+            placeholder="••••••••"
             className={`input ${errors.password ? 'input-error' : ''}`}
             value={values.password}
             onChange={handleChange}
@@ -104,26 +103,33 @@ export default function Login() {
           {errors.password && <p className="field-error">{errors.password}</p>}
         </div>
 
-        <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Logging in…' : 'Log in'}
+        <button type="submit" className="btn-accent w-full py-3" disabled={submitting}>
+          {submitting ? (
+            'Logging in…'
+          ) : (
+            <>
+              <LogIn className="h-4 w-4" aria-hidden="true" /> Log in
+            </>
+          )}
         </button>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-muted">
           No account yet?{' '}
-          <Link to="/register" className="font-medium text-emerald-700 hover:underline">
+          <Link to="/register" className="link">
             Create one
           </Link>
         </p>
       </form>
 
-      <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-        <p>
-          <strong>Demo account:</strong> demo@example.com / demo1234
+      <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-brand/30 bg-brand/10 px-4 py-3 text-sm">
+        <p className="text-muted">
+          <span className="font-semibold text-fg">Demo:</span> demo@example.com / demo1234
         </p>
-        <button type="button" onClick={fillDemo} className="mt-1 font-medium underline hover:no-underline">
+        <button type="button" onClick={fillDemo} className="link inline-flex shrink-0 items-center gap-1">
+          <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
           Fill in demo credentials
         </button>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

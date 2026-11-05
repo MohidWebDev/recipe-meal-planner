@@ -1,38 +1,32 @@
-export default function SearchBar({ value, onChange, placeholder = 'Search…', label = 'Search' }) {
+import { Search, X } from 'lucide-react';
+
+export default function SearchBar({ value, onChange, placeholder = 'Search…', label = 'Search', id = 'search' }) {
   return (
-    <div className="relative">
-      <label htmlFor="search" className="sr-only">
+    <div className="group relative">
+      <label htmlFor={id} className="sr-only">
         {label}
       </label>
-      <svg
-        className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
-        viewBox="0 0 20 20"
-        fill="currentColor"
+      <Search
+        className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-subtle transition-colors group-focus-within:text-accent"
         aria-hidden="true"
-      >
-        <path
-          fillRule="evenodd"
-          d="M9 3.5a5.5 5.5 0 1 0 3.36 9.86l3.64 3.64a.75.75 0 1 0 1.06-1.06l-3.64-3.64A5.5 5.5 0 0 0 9 3.5ZM5 9a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
-          clipRule="evenodd"
-        />
-      </svg>
+      />
       <input
-        id="search"
+        id={id}
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="input pr-9 pl-9"
+        className="input pr-10 pl-10 [&::-webkit-search-cancel-button]:hidden"
         autoComplete="off"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange('')}
-          className="absolute top-1/2 right-2 -translate-y-1/2 rounded px-1.5 text-lg leading-none text-slate-400 hover:text-slate-600"
+          className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 animate-fade-in items-center justify-center rounded-lg text-subtle transition hover:bg-overlay hover:text-fg"
           aria-label="Clear search"
         >
-          ×
+          <X className="h-4 w-4" />
         </button>
       )}
     </div>

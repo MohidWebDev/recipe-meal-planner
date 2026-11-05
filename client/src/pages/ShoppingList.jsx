@@ -1,8 +1,10 @@
+import { Check, Copy, RotateCcw, ShoppingCart } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getErrorMessage } from '../api/axios';
 import { getShoppingList } from '../api/shoppingList.api';
-import Loader from '../components/common/Loader';
+import EmptyState from '../components/common/EmptyState';
+import PageHeader from '../components/common/PageHeader';
 import useToast from '../hooks/useToast';
 import { formatQuantity } from '../utils/constants';
 import { addDays, endOfWeek, formatRange, fromDateKey, isValidDateKey, startOfWeek, toDateKey } from '../utils/dateHelpers';
@@ -97,21 +99,24 @@ export default function ShoppingList() {
     }
   };
 
+  const tickedCount = items.length - remaining.length;
+  const progress = items.length ? Math.round((tickedCount / items.length) * 100) : 0;
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Shopping list</h1>
-          <p className="text-sm text-slate-500">
-            Ingredients for every meal planned between {formatRange(fromDateKey(from), fromDateKey(to))}, scaled to your servings.
-          </p>
-        </div>
-        <button type="button" className="btn-primary shrink-0" onClick={handleCopy} disabled={!items.length}>
-          📋 Copy {remaining.length && remaining.length !== items.length ? 'remaining' : 'list'}
-        </button>
-      </div>
+      <PageHeader
+        eyebrow="Groceries"
+        title="Shopping list"
+        subtitle={`Everything for ${formatRange(fromDateKey(from), fromDateKey(to))}, scaled to your servings.`}
+        actions={
+          <button type="button" className="btn-accent" onClick={handleCopy} disabled={!items.length}>
+            <Copy className="h-4 w-4" aria-hidden="true" />
+            Copy {remaining.length && remaining.length !== items.length ? 'remaining' : 'list'}
+          </button>
+        }
+      />
 
-      <div className="card flex flex-col gap-4 p-4 sm:flex-row sm:items-end">
+      <div className="card flex flex-col gap-4 p-4 sm:flex-row sm:items-end sm:p-5">
         <div className="grid flex-1 grid-cols-2 gap-3">
           <div>
             <label htmlFor="from" className="label">
@@ -139,10 +144,10 @@ export default function ShoppingList() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button type="button" className="btn-secondary" onClick={() => setWeekRange(0)}>
+          <button type="button" className="btn-secondary flex-1 sm:flex-none" onClick={() => setWeekRange(0)}>
             This week
           </button>
-          <button type="button" className="btn-secondary" onClick={() => setWeekRange(1)}>
+          <button type="button" className="btn-secondary flex-1 sm:flex-none" onClick={() => setWeekRange(1)}>
             Next week
           </button>
         </div>
@@ -150,61 +155,89 @@ export default function ShoppingList() {
       {rangeError && <p className="field-error -mt-4">{rangeError}</p>}
 
       {error && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="alert-error">
           {error}
         </div>
       )}
 
       {loading ? (
-        <Loader label="Building your shopping list…" />
+        <div className="card space-y-3 p-5" role="status" aria-label="Building your shopping list">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="skeleton h-10" />
+          ))}
+        </div>
       ) : items.length === 0 ? (
         !error &&
         !rangeError && (
-          <div className="card flex flex-col items-center px-6 py-14 text-center">
-            <span className="text-4xl" aria-hidden="true">
-              🛒
-            </span>
-            <h2 className="mt-3 font-semibold text-slate-900">Nothing to buy</h2>
-            <p className="mt-1 max-w-sm text-sm text-slate-500">No meals are planned for these dates yet.</p>
-            <Link to="/planner" className="btn-primary mt-5">
-              Plan some meals
-            </Link>
-          </div>
+          <EmptyState
+            icon={ShoppingCart}
+            title="Nothing to buy"
+            message="No meals are planned for these dates yet."
+            action={
+              <Link to="/planner" className="btn-primary">
+                Plan some meals
+              </Link>
+            }
+          />
         )
       ) : (
-        <section className="card overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3 text-sm">
-            <span className="text-slate-600">
-              <strong className="text-slate-900">{items.length - remaining.length}</strong> of {items.length} items ticked off
-            </span>
-            {checked.size > 0 && (
-              <button type="button" className="font-medium text-emerald-700 hover:underline" onClick={() => setChecked(new Set())}>
-                Untick all
-              </button>
-            )}
+        <section className="card animate-fade-up overflow-hidden">
+          <div className="border-b border-line px-5 py-4">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted">
+                <strong className="font-display text-base text-fg">{tickedCount}</strong> of {items.length} items ticked off
+              </span>
+              {checked.size > 0 && (
+                <button type="button" className="link inline-flex items-center gap-1.5 text-sm" onClick={() => setChecked(new Set())}>
+                  <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> Untick all
+                </button>
+              )}
+            </div>
+            <div
+              className="mt-3 h-1.5 overflow-hidden rounded-full bg-raised"
+              role="progressbar"
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Shopping progress"
+            >
+              <div className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out" style={{ width: `${progress}%` }} />
+            </div>
           </div>
-          <ul className="divide-y divide-slate-100">
+
+          <ul className="divide-y divide-line">
             {items.map((item) => {
               const key = itemKey(item);
               const isChecked = checked.has(key);
               return (
                 <li key={key}>
-                  <label className="flex cursor-pointer items-start gap-3 px-5 py-3 hover:bg-slate-50">
-                    <input
-                      type="checkbox"
-                      className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-emerald-600"
-                      checked={isChecked}
-                      onChange={() => toggle(key)}
-                    />
+                  <label className="group flex cursor-pointer items-center gap-4 px-5 py-3.5 transition-colors duration-200 hover:bg-raised/60">
+                    <span className="relative flex h-5 w-5 shrink-0">
+                      <input
+                        type="checkbox"
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-line-strong bg-raised transition duration-200 checked:border-accent checked:bg-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink focus-visible:outline-none group-hover:border-subtle"
+                        checked={isChecked}
+                        onChange={() => toggle(key)}
+                      />
+                      <Check
+                        className="pointer-events-none absolute inset-0 m-auto h-3.5 w-3.5 scale-50 text-ink opacity-0 transition duration-200 peer-checked:scale-100 peer-checked:opacity-100"
+                        strokeWidth={3}
+                        aria-hidden="true"
+                      />
+                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className={`block font-medium ${isChecked ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                      <span className={`block font-medium transition-colors duration-200 ${isChecked ? 'text-subtle line-through' : 'text-fg'}`}>
                         {capitalize(item.name)}
                       </span>
                       {item.recipes?.length > 0 && (
-                        <span className="block truncate text-xs text-slate-500">For: {item.recipes.join(', ')}</span>
+                        <span className="block truncate text-xs text-subtle">For: {item.recipes.join(', ')}</span>
                       )}
                     </span>
-                    <span className={`shrink-0 text-sm font-semibold ${isChecked ? 'text-slate-400' : 'text-slate-700'}`}>
+                    <span
+                      className={`shrink-0 rounded-lg px-2.5 py-1 text-sm font-semibold transition-colors duration-200 ${
+                        isChecked ? 'text-subtle' : 'bg-brand/15 text-brand-light'
+                      }`}
+                    >
                       {formatAmount(item)}
                     </span>
                   </label>

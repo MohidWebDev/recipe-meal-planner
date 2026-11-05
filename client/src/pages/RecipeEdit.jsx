@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../api/axios';
@@ -42,19 +43,20 @@ export default function RecipeEdit() {
       return <NotFound title="Recipe not found" message="This recipe doesn't exist or belongs to another account." />;
     }
     return (
-      <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      <div role="alert" className="alert-error">
         {getErrorMessage(error)}
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-3xl animate-fade-up space-y-6">
       <div>
-        <Link to={`/recipes/${id}`} className="text-sm font-medium text-emerald-700 hover:underline">
-          ← Back to recipe
+        <Link to={`/recipes/${id}`} className="link inline-flex items-center gap-1.5 text-sm">
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to recipe
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">Edit recipe</h1>
+        <p className="eyebrow mt-5">Cookbook</p>
+        <h1 className="mt-1 text-3xl font-bold text-fg sm:text-4xl">Edit recipe</h1>
       </div>
       <RecipeForm
         key={recipe._id}

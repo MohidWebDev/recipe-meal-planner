@@ -38,6 +38,8 @@ Users sign up, build a personal recipe collection, drop recipes into a 7-day pla
 - **Weekly planner:** a 7-day grid with four meal slots per day and previous, next and "this week" navigation. A modal lets you search for a recipe, choose servings (defaults to the recipe's servings) and add or edit the meal. Meals can be removed with one click.
 - **Shopping list:** the date range defaults to the current week. Items can be ticked off (kept in the browser only), and a button copies the remaining items to the clipboard. Each item shows which recipes need it.
 - **Stats card** on the planner: your top 5 ingredients and your planned meals per cuisine.
+- **Design:** a dark theme built on three brand colors: `#030407` (background), `#1558C9` (primary actions) and `#D4FF24` (highlights such as the active page, "today" and progress). It uses Space Grotesk and Inter fonts, lucide icons, emoji covers per cuisine and skeleton loaders.
+- **Motion:** pages and cards fade in, modals scale in, buttons, cards and inputs have smooth hover and focus transitions, and mouse-wheel scrolling is eased (Lenis) with a back-to-top button. All of it is switched off for users who turn on "reduce motion" in their operating system.
 - **UX details:** toasts for success and error messages, inline form errors, loading and empty states, a responsive layout from phone to desktop, and automatic logout when the token expires (the axios response interceptor handles `401`).
 
 ---
@@ -52,7 +54,8 @@ Users sign up, build a personal recipe collection, drop recipes into a 7-day pla
 | Validation | express-validator + Mongoose schema validators |
 | Logging / misc | morgan, cors, dotenv, nodemon (dev) |
 | Client | React 19 (Vite), React Router, axios |
-| Styling | Tailwind CSS v4 |
+| Styling | Tailwind CSS v4 (custom dark theme) |
+| Icons and motion | lucide-react, Lenis (smooth scrolling) |
 
 ---
 
@@ -86,11 +89,12 @@ recipe-meal-planner/
         ├── context/                # AuthContext, ToastContext
         ├── hooks/                  # useAuth, useDebounce, useToast
         ├── components/
-        │   ├── common/             # Navbar, ProtectedRoute, Pagination, SearchBar, Loader, Modal, ConfirmModal
-        │   ├── recipes/            # RecipeCard, RecipeFilters, RecipeForm, IngredientRows
+        │   ├── common/             # Navbar, ProtectedRoute, Pagination, SearchBar, Loader, Modal, ConfirmModal,
+        │   │                       # PageHeader, EmptyState, AuthLayout, Logo, BackToTop, ScrollToTop
+        │   ├── recipes/            # RecipeCard, RecipeCardSkeleton, RecipeFilters, RecipeForm, IngredientRows
         │   └── planner/            # WeekGrid, MealSlot, AddMealModal, StatsCard
         ├── pages/                  # Login, Register, Recipes, RecipeDetail, RecipeCreate, RecipeEdit, Planner, ShoppingList, NotFound
-        └── utils/                  # dateHelpers, constants
+        └── utils/                  # dateHelpers, constants, smoothScroll
 ```
 
 Conventions used throughout the code:

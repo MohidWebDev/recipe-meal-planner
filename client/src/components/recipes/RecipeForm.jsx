@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { getErrorMessage, getFieldErrors } from '../../api/axios';
 import { CUISINES } from '../../utils/constants';
@@ -156,19 +157,24 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
   return (
     <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-6">
       {formError && (
-        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="alert-error animate-fade-in">
           {formError}
         </div>
       )}
 
-      <section className="card space-y-4 p-5">
-        <h2 className="font-semibold text-slate-900">Basics</h2>
-
+      <FormSection step="1" title="Basics" subtitle="The essentials people see on the recipe card.">
         <div>
           <label htmlFor="title" className="label">
-            Title <span className="text-red-500">*</span>
+            Title <span className="text-accent">*</span>
           </label>
-          <input id="title" name="title" className={fieldClass('title')} value={values.title} onChange={handleChange} />
+          <input
+            id="title"
+            name="title"
+            className={fieldClass('title')}
+            value={values.title}
+            onChange={handleChange}
+            placeholder="e.g. Chicken Tikka Masala"
+          />
           {errors.title && <p className="field-error">{errors.title}</p>}
         </div>
 
@@ -208,7 +214,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
           </div>
           <div>
             <label htmlFor="cookTime" className="label">
-              Cook time (min) <span className="text-red-500">*</span>
+              Cook time (min) <span className="text-accent">*</span>
             </label>
             <input
               id="cookTime"
@@ -219,12 +225,13 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
               className={fieldClass('cookTime')}
               value={values.cookTime}
               onChange={handleChange}
+              placeholder="30"
             />
             {errors.cookTime && <p className="field-error">{errors.cookTime}</p>}
           </div>
           <div>
             <label htmlFor="servings" className="label">
-              Servings <span className="text-red-500">*</span>
+              Servings <span className="text-accent">*</span>
             </label>
             <input
               id="servings"
@@ -235,6 +242,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
               className={fieldClass('servings')}
               value={values.servings}
               onChange={handleChange}
+              placeholder="4"
             />
             {errors.servings && <p className="field-error">{errors.servings}</p>}
           </div>
@@ -252,19 +260,13 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
             onChange={handleChange}
             placeholder="vegetarian, quick, dinner"
           />
-          <p className="mt-1 text-xs text-slate-500">Separate tags with commas.</p>
+          <p className="mt-1.5 text-xs text-subtle">Separate tags with commas.</p>
           {errors.tags && <p className="field-error">{errors.tags}</p>}
         </div>
-      </section>
+      </FormSection>
 
-      <section className="card space-y-4 p-5">
-        <div>
-          <h2 className="font-semibold text-slate-900">
-            Ingredients <span className="text-red-500">*</span>
-          </h2>
-          <p className="text-sm text-slate-500">Quantities are for the number of servings above.</p>
-        </div>
-        {errors.ingredients && <p className="field-error">{errors.ingredients}</p>}
+      <FormSection step="2" title="Ingredients" subtitle="Quantities are for the number of servings above." required>
+        {errors.ingredients && <p className="field-error -mt-2">{errors.ingredients}</p>}
         <IngredientRows
           ingredients={values.ingredients}
           errors={errors}
@@ -272,10 +274,10 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
           onAdd={addIngredient}
           onRemove={removeIngredient}
         />
-      </section>
+      </FormSection>
 
-      <section className="card space-y-2 p-5">
-        <label htmlFor="instructions" className="font-semibold text-slate-900">
+      <FormSection step="3" title="Instructions" subtitle="Put each step on its own line.">
+        <label htmlFor="instructions" className="sr-only">
           Instructions
         </label>
         <textarea
@@ -288,7 +290,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
           placeholder={'1. Prep the ingredients\n2. ...'}
         />
         {errors.instructions && <p className="field-error">{errors.instructions}</p>}
-      </section>
+      </FormSection>
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         {onCancel && (
@@ -296,10 +298,38 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = 'Sav
             Cancel
           </button>
         )}
-        <button type="submit" className="btn-primary" disabled={submitting}>
-          {submitting ? 'Saving…' : submitLabel}
+        <button type="submit" className="btn-primary min-w-36" disabled={submitting}>
+          {submitting ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden="true" />
+              Saving…
+            </>
+          ) : (
+            <>
+              <Check className="h-4 w-4" aria-hidden="true" /> {submitLabel}
+            </>
+          )}
         </button>
       </div>
     </form>
+  );
+}
+
+function FormSection({ step, title, subtitle, required = false, children }) {
+  return (
+    <section className="card space-y-4 p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand/15 font-display text-sm font-bold text-brand-light ring-1 ring-brand/30">
+          {step}
+        </span>
+        <div>
+          <h2 className="text-lg font-semibold text-fg">
+            {title} {required && <span className="text-accent">*</span>}
+          </h2>
+          {subtitle && <p className="text-sm text-muted">{subtitle}</p>}
+        </div>
+      </div>
+      {children}
+    </section>
   );
 }

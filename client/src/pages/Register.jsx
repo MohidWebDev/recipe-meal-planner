@@ -1,6 +1,8 @@
+import { UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getErrorMessage, getFieldErrors } from '../api/axios';
+import AuthLayout from '../components/common/AuthLayout';
 import useAuth from '../hooks/useAuth';
 import useToast from '../hooks/useToast';
 
@@ -18,10 +20,10 @@ const validate = ({ name, email, password, confirmPassword }) => {
 };
 
 const FIELDS = [
-  { name: 'name', label: 'Name', type: 'text', autoComplete: 'name' },
-  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email' },
-  { name: 'password', label: 'Password', type: 'password', autoComplete: 'new-password', hint: 'At least 6 characters' },
-  { name: 'confirmPassword', label: 'Confirm password', type: 'password', autoComplete: 'new-password' },
+  { name: 'name', label: 'Name', type: 'text', autoComplete: 'name', placeholder: 'Jane Doe' },
+  { name: 'email', label: 'Email', type: 'email', autoComplete: 'email', placeholder: 'you@example.com' },
+  { name: 'password', label: 'Password', type: 'password', autoComplete: 'new-password', placeholder: '••••••••', hint: 'At least 6 characters' },
+  { name: 'confirmPassword', label: 'Confirm password', type: 'password', autoComplete: 'new-password', placeholder: '••••••••' },
 ];
 
 export default function Register() {
@@ -66,15 +68,10 @@ export default function Register() {
   };
 
   return (
-    <div className="mx-auto max-w-md py-8">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
-        <p className="mt-1 text-sm text-slate-500">Save recipes, plan meals and never forget an ingredient.</p>
-      </div>
-
-      <form onSubmit={handleSubmit} noValidate className="card space-y-4 p-6">
+    <AuthLayout title="Create your account" subtitle="Save recipes, plan meals and never forget an ingredient.">
+      <form onSubmit={handleSubmit} noValidate className="card space-y-5 p-6 sm:p-7">
         {serverError && (
-          <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div role="alert" className="alert-error animate-fade-in">
             {serverError}
           </div>
         )}
@@ -89,6 +86,7 @@ export default function Register() {
               name={field.name}
               type={field.type}
               autoComplete={field.autoComplete}
+              placeholder={field.placeholder}
               className={`input ${errors[field.name] ? 'input-error' : ''}`}
               value={values[field.name]}
               onChange={handleChange}
@@ -96,22 +94,28 @@ export default function Register() {
             {errors[field.name] ? (
               <p className="field-error">{errors[field.name]}</p>
             ) : (
-              field.hint && <p className="mt-1 text-xs text-slate-500">{field.hint}</p>
+              field.hint && <p className="mt-1.5 text-xs text-subtle">{field.hint}</p>
             )}
           </div>
         ))}
 
-        <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Creating account…' : 'Create account'}
+        <button type="submit" className="btn-accent w-full py-3" disabled={submitting}>
+          {submitting ? (
+            'Creating account…'
+          ) : (
+            <>
+              <UserPlus className="h-4 w-4" aria-hidden="true" /> Create account
+            </>
+          )}
         </button>
 
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-muted">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-emerald-700 hover:underline">
+          <Link to="/login" className="link">
             Log in
           </Link>
         </p>
       </form>
-    </div>
+    </AuthLayout>
   );
 }
