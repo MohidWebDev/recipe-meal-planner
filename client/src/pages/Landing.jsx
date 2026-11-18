@@ -4,6 +4,7 @@ import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
 import Hero from "../components/landing/Hero";
 import HowItWorks from "../components/landing/HowItWorks";
+import Features from "../components/landing/Features";
 
 const SECTION_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -24,7 +25,7 @@ export default function Landing() {
       <main>
         <Hero />
         <HowItWorks />
-        {/* Step 5: <Features /> */}
+        <Features />
         {/* Step 6: <CtaBand /> */}
       </main>
       {/* Step 6: <LandingFooter /> */}
