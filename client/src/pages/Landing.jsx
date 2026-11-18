@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
 import Hero from "../components/landing/Hero";
+import HowItWorks from "../components/landing/HowItWorks";
 
 const SECTION_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -22,7 +23,7 @@ export default function Landing() {
       <Navbar sectionLinks={SECTION_LINKS} logoHref="#top" />
       <main>
         <Hero />
-        {/* Step 4: <HowItWorks /> */}
+        <HowItWorks />
         {/* Step 5: <Features /> */}
         {/* Step 6: <CtaBand /> */}
       </main>
