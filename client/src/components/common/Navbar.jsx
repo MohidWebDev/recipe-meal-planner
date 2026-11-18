@@ -1,60 +1,120 @@
-import { BookOpen, CalendarDays, LogOut, Menu, ShoppingCart, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
-import Logo from './Logo';
+import {
+  BookOpen,
+  CalendarDays,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import Logo from "./Logo";
 
 const LINKS = [
-  { to: '/recipes', label: 'Recipes', icon: BookOpen },
-  { to: '/planner', label: 'Meal Planner', icon: CalendarDays },
-  { to: '/shopping-list', label: 'Shopping List', icon: ShoppingCart },
+  { to: "/recipes", label: "Recipes", icon: BookOpen },
+  { to: "/planner", label: "Meal Planner", icon: CalendarDays },
+  { to: "/shopping-list", label: "Shopping List", icon: ShoppingCart },
 ];
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition duration-200 ${
-    isActive ? 'bg-accent/10 text-accent' : 'text-muted hover:bg-raised hover:text-fg'
+    isActive
+      ? "bg-accent/10 text-accent"
+      : "text-muted hover:bg-raised hover:text-fg"
   }`;
 
-const initials = (name = '') =>
+const sectionLinkClass =
+  "rounded-xl px-3.5 py-2 text-sm font-medium text-muted transition duration-200 hover:bg-raised hover:text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+
+const logoLinkClass =
+  "group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+
+const initials = (name = "") =>
   name
-    .split(' ')
+    .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0].toUpperCase())
-    .join('');
+    .join("");
 
-export default function Navbar() {
+/**
+ * Optional props (used by the landing page):
+ *  - sectionLinks: [{ href: '#features', label: 'Features' }] shown to logged-out visitors
+ *  - logoHref: makes the logo a plain anchor (e.g. '#top') instead of a route link
+ */
+export default function Navbar({ sectionLinks = [], logoHref }) {
   const { user, isAuthenticated, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  const hasSections = !isAuthenticated && sectionLinks.length > 0;
+  const closeMenu = () => setMenuOpen(false);
+
   // Close the mobile menu whenever the route changes.
   useEffect(() => setMenuOpen(false), [location.pathname]);
+
+  // Close the mobile menu with Escape.
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   // Slightly stronger background once the page is scrolled.
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const logo = (
+    <>
+      <span className="sm:hidden">
+        <Logo showText={false} />
+      </span>
+      <span className="hidden sm:inline">
+        <Logo />
+      </span>
+    </>
+  );
+
+  const menuButton = (
+    <button
+      type="button"
+      className="icon-btn md:hidden"
+      onClick={() => setMenuOpen((open) => !open)}
+      aria-expanded={menuOpen}
+      aria-label="Toggle menu"
+    >
+      {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+    </button>
+  );
 
   return (
     <header
       className={`sticky top-0 z-40 border-b backdrop-blur-xl transition-colors duration-300 ${
-        scrolled ? 'border-line bg-ink/85' : 'border-transparent bg-ink/40'
+        scrolled || menuOpen
+          ? "border-line bg-ink/85"
+          : "border-transparent bg-ink/40"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to={isAuthenticated ? '/recipes' : '/login'} className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
-          <span className="sm:hidden">
-            <Logo showText={false} />
-          </span>
-          <span className="hidden sm:inline">
-            <Logo />
-          </span>
-        </Link>
+        {logoHref ? (
+          <a href={logoHref} className={logoLinkClass} aria-label="Back to top">
+            {logo}
+          </a>
+        ) : (
+          <Link
+            to={isAuthenticated ? "/recipes" : "/login"}
+            className={logoLinkClass}
+          >
+            {logo}
+          </Link>
+        )}
 
         {isAuthenticated ? (
           <>
@@ -75,32 +135,52 @@ export default function Navbar() {
                 >
                   {initials(user?.name)}
                 </span>
-                <span className="hidden text-sm font-medium text-fg lg:inline">{user?.name?.split(' ')[0]}</span>
+                <span className="hidden text-sm font-medium text-fg lg:inline">
+                  {user?.name?.split(" ")[0]}
+                </span>
               </span>
-              <button type="button" className="icon-btn" onClick={logout} title="Log out" aria-label="Log out">
-                <LogOut className="h-[18px] w-[18px]" />
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={logout}
+                title="Log out"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4.5 w-4.5" />
               </button>
             </div>
 
-            <button
-              type="button"
-              className="icon-btn md:hidden"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-expanded={menuOpen}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+            {menuButton}
           </>
         ) : (
-          <nav className="flex items-center gap-2">
-            <NavLink to="/login" className={linkClass}>
-              Log in
-            </NavLink>
-            <Link to="/register" className="btn-accent py-2">
-              Sign up
-            </Link>
-          </nav>
+          <>
+            {hasSections && (
+              <nav
+                className="hidden items-center gap-1 md:flex"
+                aria-label="Page sections"
+              >
+                {sectionLinks.map(({ href, label }) => (
+                  <a key={href} href={href} className={sectionLinkClass}>
+                    {label}
+                  </a>
+                ))}
+              </nav>
+            )}
+
+            {/* With section links the buttons move into the mobile menu on small screens */}
+            <nav
+              className={`items-center gap-2 ${hasSections ? "hidden md:flex" : "flex"}`}
+            >
+              <NavLink to="/login" className={linkClass}>
+                Log in
+              </NavLink>
+              <Link to="/register" className="btn-accent py-2">
+                {hasSections ? "Get started" : "Sign up"}
+              </Link>
+            </nav>
+
+            {hasSections && menuButton}
+          </>
         )}
       </div>
 
@@ -121,9 +201,38 @@ export default function Navbar() {
               </span>
               <span className="truncate text-sm text-muted">{user?.email}</span>
             </span>
-            <button type="button" className="btn-secondary py-2" onClick={logout}>
+            <button
+              type="button"
+              className="btn-secondary py-2"
+              onClick={logout}
+            >
               <LogOut className="h-4 w-4" /> Log out
             </button>
+          </div>
+        </div>
+      )}
+
+      {hasSections && menuOpen && (
+        <div className="animate-fade-in border-t border-line bg-ink/95 px-4 py-3 md:hidden">
+          <nav className="flex flex-col gap-1" aria-label="Page sections">
+            {sectionLinks.map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                onClick={closeMenu}
+                className={sectionLinkClass}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+          <div className="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-3">
+            <Link to="/login" onClick={closeMenu} className="btn-secondary">
+              Log in
+            </Link>
+            <Link to="/register" onClick={closeMenu} className="btn-accent">
+              Get started
+            </Link>
           </div>
         </div>
       )}
