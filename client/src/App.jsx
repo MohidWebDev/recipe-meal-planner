@@ -1,19 +1,20 @@
-import { useEffect } from 'react';
-import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
-import BackToTop from './components/common/BackToTop';
-import Navbar from './components/common/Navbar';
-import ProtectedRoute from './components/common/ProtectedRoute';
-import ScrollToTop from './components/common/ScrollToTop';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import Planner from './pages/Planner';
-import RecipeCreate from './pages/RecipeCreate';
-import RecipeDetail from './pages/RecipeDetail';
-import RecipeEdit from './pages/RecipeEdit';
-import Recipes from './pages/Recipes';
-import Register from './pages/Register';
-import ShoppingList from './pages/ShoppingList';
-import { initSmoothScroll } from './utils/smoothScroll';
+import { useEffect } from "react";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import BackToTop from "./components/common/BackToTop";
+import Navbar from "./components/common/Navbar";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import ScrollToTop from "./components/common/ScrollToTop";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import Planner from "./pages/Planner";
+import RecipeCreate from "./pages/RecipeCreate";
+import RecipeDetail from "./pages/RecipeDetail";
+import RecipeEdit from "./pages/RecipeEdit";
+import Recipes from "./pages/Recipes";
+import Register from "./pages/Register";
+import ShoppingList from "./pages/ShoppingList";
+import { initSmoothScroll } from "./utils/smoothScroll";
 
 function Layout() {
   const { pathname } = useLocation();
@@ -28,7 +29,8 @@ function Layout() {
         </div>
       </main>
       <footer className="border-t border-line py-6 text-center text-xs text-subtle">
-        Recipe <span className="text-accent">&amp;</span> Meal Planner · MERN capstone
+        Recipe <span className="text-accent">&amp;</span> Meal Planner · MERN
+        capstone
       </footer>
       <BackToTop />
     </div>
@@ -42,13 +44,15 @@ export default function App() {
     <>
       <ScrollToTop />
       <Routes>
+        {/* Public landing page: has its own nav and footer, so it sits outside Layout */}
+        <Route path="/" element={<Landing />} />
+
         <Route element={<Layout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Everything below requires a logged-in user */}
           <Route element={<ProtectedRoute />}>
-            <Route index element={<Navigate to="/recipes" replace />} />
             <Route path="/recipes" element={<Recipes />} />
             <Route path="/recipes/new" element={<RecipeCreate />} />
             <Route path="/recipes/:id" element={<RecipeDetail />} />
