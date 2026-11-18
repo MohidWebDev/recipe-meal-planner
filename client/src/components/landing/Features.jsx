@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   UtensilsCrossed,
 } from "lucide-react";
+import Reveal from "./Reveal";
 
 /* ---------- Mini illustrations (plain divs, no images) ---------- */
 
@@ -152,7 +153,7 @@ export default function Features() {
   return (
     <section id="features" className="border-t border-line/60 py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">Features</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
             Everything you need to eat well, nothing you don't
@@ -160,13 +161,15 @@ export default function Features() {
           <p className="mt-4 text-muted">
             Four focused tools that work together.
           </p>
-        </div>
+        </Reveal>
 
         <div className="mt-14 grid gap-4 md:grid-cols-6">
-          {TILES.map(({ icon: Icon, title, text, art: Art, span }) => (
-            <article
+          {TILES.map(({ icon: Icon, title, text, art: Art, span }, i) => (
+            <Reveal
+              as="article"
               key={title}
-              className={`card group relative overflow-hidden p-6 transition duration-300 hover:border-line-strong ${span}`}
+              delay={(i % 2) * 120}
+              className={`card group relative overflow-hidden p-6 hover:border-line-strong ${span}`}
             >
               {/* Corner glow that brightens on hover */}
               <div
@@ -184,7 +187,7 @@ export default function Features() {
                 </p>
                 <Art />
               </div>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { ArrowRight, Check, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import DemoButton from "./DemoButton";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const TODAY = 2; // Wed, highlighted in the mock
@@ -141,10 +142,11 @@ export default function Hero() {
               Get started free
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            {/* Wired to the demo account in Step 7 */}
-            <Link to="/login" className="btn-secondary px-6 py-3 text-base">
-              Try demo
+            <Link to="/register" className="btn-accent px-6 py-3 text-base">
+              Get started free
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
+            <DemoButton />
           </div>
 
           <p className="mt-4 text-xs text-subtle">

@@ -1,11 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import Reveal from "./Reveal";
 
 export default function CtaBand() {
   return (
     <section className="border-t border-line/60 py-20 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-3xl border border-line-strong bg-surface px-6 py-14 text-center sm:px-12 sm:py-16">
+        <Reveal className="relative overflow-hidden rounded-3xl border border-line-strong bg-surface px-6 py-14 text-center sm:px-12 sm:py-16">
           {/* Glows */}
           <div
             className="pointer-events-none absolute -top-24 left-1/2 h-64 w-xl -translate-x-1/2 rounded-full bg-brand/30 blur-3xl"
@@ -37,7 +38,7 @@ export default function CtaBand() {
               </Link>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

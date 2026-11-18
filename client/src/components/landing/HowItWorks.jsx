@@ -1,4 +1,5 @@
 import { BookOpen, CalendarDays, ShoppingCart } from "lucide-react";
+import Reveal from "./Reveal";
 
 const STEPS = [
   {
@@ -28,7 +29,7 @@ export default function HowItWorks() {
       className="border-t border-line/60 py-20 sm:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">How it works</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
             From recipe to shopping list in three steps
@@ -36,7 +37,7 @@ export default function HowItWorks() {
           <p className="mt-4 text-muted">
             No spreadsheets, no scribbled notes. Everything stays in one place.
           </p>
-        </div>
+        </Reveal>
 
         <ol className="relative mt-14 grid gap-6 md:grid-cols-3">
           {/* Connector line: runs behind the cards, so it only shows in the gaps between them */}
@@ -46,35 +47,44 @@ export default function HowItWorks() {
           />
 
           {STEPS.map(({ icon: Icon, title, text, points }, i) => (
-            <li
+            <Reveal
+              as="li"
               key={title}
-              className="card relative z-10 bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:border-line-strong"
+              delay={i * 120}
+              className="relative z-10"
             >
-              <div className="flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-accent/40 bg-accent/10 font-display text-lg font-bold text-accent">
-                  {i + 1}
-                </span>
-                <Icon className="h-6 w-6 text-brand-light" aria-hidden="true" />
+              <div className="card h-full bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:border-line-strong">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-accent/40 bg-accent/10 font-display text-lg font-bold text-accent">
+                    {i + 1}
+                  </span>
+                  <Icon
+                    className="h-6 w-6 text-brand-light"
+                    aria-hidden="true"
+                  />
+                </div>
+
+                <h3 className="mt-5 text-xl font-semibold">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {text}
+                </p>
+
+                <ul className="mt-5 space-y-2 border-t border-line pt-4">
+                  {points.map((point) => (
+                    <li
+                      key={point}
+                      className="flex items-center gap-2 text-xs text-subtle"
+                    >
+                      <span
+                        className="h-1.5 w-1.5 rounded-full bg-accent"
+                        aria-hidden="true"
+                      />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              <h3 className="mt-5 text-xl font-semibold">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{text}</p>
-
-              <ul className="mt-5 space-y-2 border-t border-line pt-4">
-                {points.map((point) => (
-                  <li
-                    key={point}
-                    className="flex items-center gap-2 text-xs text-subtle"
-                  >
-                    <span
-                      className="h-1.5 w-1.5 rounded-full bg-accent"
-                      aria-hidden="true"
-                    />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </div>

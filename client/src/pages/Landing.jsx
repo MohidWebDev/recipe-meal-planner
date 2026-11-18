@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
@@ -16,6 +17,14 @@ const SECTION_LINKS = [
 export default function Landing() {
   const { isAuthenticated, initializing } = useAuth();
 
+  useEffect(() => {
+    const previous = document.title;
+    document.title = "Recipe & Meal Planner · Plan the week, shop once";
+    return () => {
+      document.title = previous;
+    };
+  }, []);
+
   if (initializing) return <Loader fullScreen label="Loading…" />;
 
   // Logged-in users skip the marketing page and go straight to the app
@@ -23,8 +32,14 @@ export default function Landing() {
 
   return (
     <div id="top" className="min-h-screen">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn-accent"
+      >
+        Skip to content
+      </a>
       <Navbar sectionLinks={SECTION_LINKS} logoHref="#top" />
-      <main>
+      <main id="main" tabIndex={-1} className="focus:outline-none">
         <Hero />
         <HowItWorks />
         <Features />
