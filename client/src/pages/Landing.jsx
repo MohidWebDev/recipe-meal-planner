@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
+import Hero from "../components/landing/Hero";
 
 const SECTION_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -20,19 +21,10 @@ export default function Landing() {
     <div id="top" className="min-h-screen">
       <Navbar sectionLinks={SECTION_LINKS} logoHref="#top" />
       <main>
-        {/* Step 3: <Hero /> */}
+        <Hero />
         {/* Step 4: <HowItWorks /> */}
         {/* Step 5: <Features /> */}
         {/* Step 6: <CtaBand /> */}
-        <section className="flex min-h-[70vh] items-center justify-center px-4 text-center">
-          <div>
-            <p className="eyebrow">Landing page</p>
-            <h1 className="mt-3 text-4xl font-bold">Skeleton works</h1>
-            <p className="mt-2 text-muted">
-              Sections will appear here step by step.
-            </p>
-          </div>
-        </section>
       </main>
       {/* Step 6: <LandingFooter /> */}
     </div>
