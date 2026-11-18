@@ -5,6 +5,8 @@ import Navbar from "../components/common/Navbar";
 import Hero from "../components/landing/Hero";
 import HowItWorks from "../components/landing/HowItWorks";
 import Features from "../components/landing/Features";
+import CtaBand from "../components/landing/CtaBand";
+import LandingFooter from "../components/landing/LandingFooter";
 
 const SECTION_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -26,9 +28,9 @@ export default function Landing() {
         <Hero />
         <HowItWorks />
         <Features />
-        {/* Step 6: <CtaBand /> */}
+        <CtaBand />
       </main>
-      {/* Step 6: <LandingFooter /> */}
+      <LandingFooter />
     </div>
   );
 }

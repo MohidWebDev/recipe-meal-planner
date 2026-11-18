@@ -15,7 +15,7 @@ export default function RecipeCard({ recipe, index = 0 }) {
       <div className="relative h-28 overflow-hidden border-b border-line bg-[radial-gradient(120%_120%_at_0%_0%,rgba(21,88,201,0.45),transparent_60%),radial-gradient(80%_80%_at_100%_100%,rgba(212,255,36,0.12),transparent_60%)]">
         {cuisine && <span className="badge absolute top-3 left-4 border-white/10 bg-ink/60 text-fg backdrop-blur">{cuisine}</span>}
         <span
-          className="absolute right-4 -bottom-2 text-6xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] transition duration-500 ease-out group-hover:-translate-y-1 group-hover:rotate-[-6deg]"
+          className="absolute right-4 -bottom-2 text-6xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] transition duration-500 ease-out group-hover:-translate-y-1 group-hover:-rotate-6"
           aria-hidden="true"
         >
           {getCuisineEmoji(cuisine)}

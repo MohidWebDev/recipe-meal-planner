@@ -50,7 +50,7 @@ export function ToastProvider({ children }) {
       {children}
       <div
         aria-live="polite"
-        className="pointer-events-none fixed inset-x-0 top-20 z-[60] flex flex-col items-center gap-2 px-4 sm:items-end sm:pr-6"
+        className="pointer-events-none fixed inset-x-0 top-20 z-60 flex flex-col items-center gap-2 px-4 sm:items-end sm:pr-6"
       >
         {toasts.map((toast) => {
           const { icon: Icon, className } = VARIANTS[toast.type] ?? VARIANTS.info;
@@ -62,7 +62,7 @@ export function ToastProvider({ children }) {
                 toast.leaving ? 'translate-x-4 opacity-0' : 'animate-slide-in'
               }`}
             >
-              <Icon className={`mt-0.5 h-[18px] w-[18px] shrink-0 ${className}`} aria-hidden="true" />
+              <Icon className={`mt-0.5 h-4.5 w-4.5 shrink-0 ${className}`} aria-hidden="true" />
               <p className="flex-1 leading-snug">{toast.message}</p>
               <button
                 type="button"

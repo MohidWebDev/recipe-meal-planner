@@ -70,7 +70,7 @@ export default function IngredientRows({ ingredients, errors = {}, onChange, onA
                 </div>
                 <button
                   type="button"
-                  className="icon-btn h-[42px] w-10 shrink-0 hover:bg-danger/10 hover:text-danger"
+                  className="icon-btn h-10.5 w-10 shrink-0 hover:bg-danger/10 hover:text-danger"
                   onClick={() => onRemove(index)}
                   disabled={ingredients.length === 1}
                   aria-label={`Remove ingredient ${index + 1}`}
