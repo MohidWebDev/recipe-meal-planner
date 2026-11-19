@@ -53,6 +53,11 @@ export default function Footer() {
                   </SectionLink>
                 </li>
               ))}
+              <li>
+                <Link to="/about" className={linkClass}>
+                  About
+                </Link>
+              </li>
             </ul>
           </nav>
 

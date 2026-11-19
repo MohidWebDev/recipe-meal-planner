@@ -8,6 +8,7 @@ import Footer from "./components/common/Footer";
 import BottomNav from "./components/common/BottomNav";
 import useAuth from "./hooks/useAuth";
 import Landing from "./pages/Landing";
+import About from "./pages/About";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Planner from "./pages/Planner";
@@ -54,6 +55,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
 
           {/* Everything below requires a logged-in user */}
           <Route element={<ProtectedRoute />}>

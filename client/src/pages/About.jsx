@@ -99,45 +99,6 @@ export default function About() {
         </div>
       </section>
 
-      <section aria-labelledby="about-stack">
-        <h2
-          id="about-stack"
-          className="mb-4 font-display text-xl font-semibold text-fg"
-        >
-          Built with
-        </h2>
-        <ul className="flex flex-wrap gap-2">
-          {STACK.map((tech) => (
-            <li
-              key={tech}
-              className="rounded-full border border-line bg-raised px-3 py-1 text-sm text-muted"
-            >
-              {tech}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="card flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="font-display text-xl font-semibold text-fg">
-            Built as a capstone project
-          </h2>
-          <p className="mt-1 text-sm text-muted">
-            A full-stack MERN app. The source code is open on GitHub.
-          </p>
-        </div>
-        <a
-          href={REPO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-secondary shrink-0"
-        >
-          View on GitHub
-          <ExternalLink className="h-4 w-4" aria-hidden="true" />
-        </a>
-      </section>
-
       <div className="text-center">
         <Link
           to={isAuthenticated ? "/recipes" : "/register"}
