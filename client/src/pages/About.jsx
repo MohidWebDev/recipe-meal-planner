@@ -1,15 +1,8 @@
-import {
-  BookOpen,
-  CalendarDays,
-  ExternalLink,
-  ShoppingCart,
-} from "lucide-react";
+import { BookOpen, CalendarDays, ShoppingCart } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import PageHeader from "../components/common/PageHeader";
 import useAuth from "../hooks/useAuth";
-
-const REPO_URL = "https://github.com/MohidWebDev/recipe-meal-planner";
 
 const FEATURES = [
   {
@@ -29,16 +22,19 @@ const FEATURES = [
   },
 ];
 
-const STACK = [
-  "React",
-  "Vite",
-  "Tailwind CSS",
-  "React Router",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "Mongoose",
-  "JWT",
+const PRINCIPLES = [
+  {
+    title: "Simple by design",
+    text: "No clutter and no learning curve. Add a recipe, plan a meal, and you're done.",
+  },
+  {
+    title: "Saves you time",
+    text: "One combined shopping list means no more rebuilding it from scratch every week.",
+  },
+  {
+    title: "Built around you",
+    text: "Your recipes, your servings, your week, all organised in one account.",
+  },
 ];
 
 export default function About() {
@@ -91,6 +87,25 @@ export default function About() {
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <h3 className="mt-4 font-display text-base font-semibold text-fg">
+                {title}
+              </h3>
+              <p className="mt-1.5 text-sm text-muted">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="about-principles">
+        <h2
+          id="about-principles"
+          className="mb-4 font-display text-xl font-semibold text-fg"
+        >
+          What we care about
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {PRINCIPLES.map(({ title, text }) => (
+            <div key={title} className="card p-5">
+              <h3 className="font-display text-base font-semibold text-fg">
                 {title}
               </h3>
               <p className="mt-1.5 text-sm text-muted">{text}</p>
