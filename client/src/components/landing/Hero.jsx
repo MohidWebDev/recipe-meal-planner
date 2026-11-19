@@ -1,5 +1,6 @@
 import { ArrowRight, Check, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import DemoButton from "./DemoButton";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -116,6 +117,7 @@ function MealRow({ meal, slots }) {
 }
 
 export default function Hero() {
+  const { isAuthenticated } = useAuth();
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 pt-16 pb-24 sm:px-6 sm:pt-20 lg:grid-cols-2 lg:gap-12 lg:pt-28 lg:pb-32">
@@ -138,20 +140,27 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/register" className="btn-accent px-6 py-3 text-base">
-              Get started free
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link to="/register" className="btn-accent px-6 py-3 text-base">
-              Get started free
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <DemoButton />
+            {isAuthenticated ? (
+              <Link to="/recipes" className="btn-accent px-6 py-3 text-base">
+                Open your recipes
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            ) : (
+              <>
+                <Link to="/register" className="btn-accent px-6 py-3 text-base">
+                  Get started free
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <DemoButton />
+              </>
+            )}
           </div>
 
-          <p className="mt-4 text-xs text-subtle">
-            Free to use · No credit card required
-          </p>
+          {!isAuthenticated && (
+            <p className="mt-4 text-xs text-subtle">
+              Free to use · No credit card required
+            </p>
+          )}
         </div>
 
         {/* Visual */}

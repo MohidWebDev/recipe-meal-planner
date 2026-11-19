@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import Logo from "../common/Logo";
 
 const PRODUCT_LINKS = [
@@ -10,6 +11,7 @@ const linkClass =
   "text-sm text-muted transition hover:text-fg focus:outline-none focus-visible:text-accent";
 
 export default function LandingFooter() {
+  const { isAuthenticated } = useAuth();
   return (
     <footer className="border-t border-line">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:items-start md:justify-between">
@@ -36,23 +38,25 @@ export default function LandingFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Account">
-            <p className="mb-3 text-xs font-semibold tracking-[0.16em] text-subtle uppercase">
-              Account
-            </p>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/login" className={linkClass}>
-                  Log in
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className={linkClass}>
-                  Sign up
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          {!isAuthenticated && (
+            <nav aria-label="Account">
+              <p className="mb-3 text-xs font-semibold tracking-[0.16em] text-subtle uppercase">
+                Account
+              </p>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/login" className={linkClass}>
+                    Log in
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className={linkClass}>
+                    Sign up
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
 

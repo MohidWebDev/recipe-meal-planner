@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
@@ -15,7 +14,7 @@ const SECTION_LINKS = [
 ];
 
 export default function Landing() {
-  const { isAuthenticated, initializing } = useAuth();
+  const { initializing } = useAuth();
 
   useEffect(() => {
     const previous = document.title;
@@ -26,9 +25,6 @@ export default function Landing() {
   }, []);
 
   if (initializing) return <Loader fullScreen label="Loading…" />;
-
-  // Logged-in users skip the marketing page and go straight to the app
-  if (isAuthenticated) return <Navigate to="/recipes" replace />;
 
   return (
     <div id="top" className="min-h-screen">

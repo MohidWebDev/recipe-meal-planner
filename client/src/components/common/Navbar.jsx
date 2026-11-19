@@ -108,10 +108,7 @@ export default function Navbar({ sectionLinks = [], logoHref }) {
             {logo}
           </a>
         ) : (
-          <Link
-            to={isAuthenticated ? "/recipes" : "/login"}
-            className={logoLinkClass}
-          >
+          <Link to="/" className={logoLinkClass} aria-label="Go to home page">
             {logo}
           </Link>
         )}

@@ -1,8 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import Reveal from "./Reveal";
 
 export default function CtaBand() {
+  const { isAuthenticated } = useAuth();
   return (
     <section className="border-t border-line/60 py-20 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -29,13 +31,28 @@ export default function CtaBand() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link to="/register" className="btn-accent px-6 py-3 text-base">
-                Get started free
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link to="/login" className="btn-secondary px-6 py-3 text-base">
-                I already have an account
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/planner" className="btn-accent px-6 py-3 text-base">
+                  Go to your planner
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/register"
+                    className="btn-accent px-6 py-3 text-base"
+                  >
+                    Get started free
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="btn-secondary px-6 py-3 text-base"
+                  >
+                    I already have an account
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </Reveal>
