@@ -11,6 +11,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { scrollToTop } from "../../utils/smoothScroll";
 import Logo from "./Logo";
+import SectionLink from "./SectionLink";
 
 const LINKS = [
   { to: "/recipes", label: "Recipes", icon: BookOpen },
@@ -176,9 +177,13 @@ export default function Navbar({ sectionLinks = [], logoHref }) {
                 aria-label="Page sections"
               >
                 {sectionLinks.map(({ href, label }) => (
-                  <a key={href} href={href} className={sectionLinkClass}>
+                  <SectionLink
+                    key={href}
+                    id={href.slice(1)}
+                    className={sectionLinkClass}
+                  >
                     {label}
-                  </a>
+                  </SectionLink>
                 ))}
               </nav>
             )}
@@ -232,14 +237,14 @@ export default function Navbar({ sectionLinks = [], logoHref }) {
         <div className="animate-fade-in border-t border-line bg-ink/95 px-4 py-3 md:hidden">
           <nav className="flex flex-col gap-1" aria-label="Page sections">
             {sectionLinks.map(({ href, label }) => (
-              <a
+              <SectionLink
                 key={href}
-                href={href}
+                id={href.slice(1)}
                 onClick={closeMenu}
                 className={sectionLinkClass}
               >
                 {label}
-              </a>
+              </SectionLink>
             ))}
           </nav>
           <div className="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-3">

@@ -1,4 +1,4 @@
-import Lenis from 'lenis';
+import Lenis from "lenis";
 
 /**
  * Smooth (eased) mouse-wheel scrolling for the whole page, powered by Lenis.
@@ -7,7 +7,8 @@ import Lenis from 'lenis';
  */
 let lenis = null;
 
-const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const prefersReducedMotion = () =>
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 export function initSmoothScroll() {
   if (lenis || prefersReducedMotion()) return () => {};
@@ -17,7 +18,7 @@ export function initSmoothScroll() {
     duration: 1.1,
     easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)), // ease-out-expo
     smoothWheel: true,
-    anchors: true,
+    anchors: false,
   });
 
   // Lenis re-measures the page on its own, but only after a short delay. Re-measure as soon as
@@ -37,7 +38,25 @@ export function scrollToTop({ immediate = false } = {}) {
   if (lenis) {
     lenis.scrollTo(0, { immediate, force: true });
   } else {
-    window.scrollTo({ top: 0, behavior: immediate ? 'instant' : 'smooth' });
+    window.scrollTo({ top: 0, behavior: immediate ? "instant" : "smooth" });
+  }
+}
+
+/** Scrolls to the element with this id, leaving room for the sticky navbar. */
+export function scrollToSection(id, { immediate = false } = {}) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  if (lenis) {
+    const offset =
+      parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) ||
+      0;
+    lenis.scrollTo(el, { offset: -offset, immediate, force: true });
+  } else {
+    el.scrollIntoView({
+      behavior: immediate ? "instant" : "smooth",
+      block: "start",
+    });
   }
 }
 

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { scrollToSection } from "../utils/smoothScroll";
 import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
@@ -25,12 +26,15 @@ export default function Landing() {
     };
   }, []);
 
-  const { hash } = useLocation();
+  const { state } = useLocation();
+  const navigate = useNavigate();
 
+  // Arrived from another page via a footer section link
   useEffect(() => {
-    if (initializing || !hash) return;
-    document.getElementById(hash.slice(1))?.scrollIntoView();
-  }, [hash, initializing]);
+    if (initializing || !state?.section) return;
+    scrollToSection(state.section, { immediate: true });
+    navigate("/", { replace: true, state: null }); // clear it so refresh/back doesn't re-scroll
+  }, [state, initializing, navigate]);
 
   if (initializing) return <Loader fullScreen label="Loading…" />;
 

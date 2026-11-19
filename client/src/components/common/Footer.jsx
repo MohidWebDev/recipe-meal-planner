@@ -1,10 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Logo from "./Logo";
+import SectionLink from "./SectionLink";
 
 const SECTION_LINKS = [
-  { hash: "#how-it-works", label: "How it works" },
-  { hash: "#features", label: "Features" },
+  { id: "how-it-works", label: "How it works" },
+  { id: "features", label: "Features" },
 ];
 
 const APP_LINKS = [
@@ -26,8 +27,6 @@ const headingClass =
 
 export default function Footer() {
   const { isAuthenticated } = useAuth();
-  const { pathname } = useLocation();
-  const onLanding = pathname === "/";
 
   const second = isAuthenticated
     ? { title: "App", links: APP_LINKS }
@@ -47,17 +46,11 @@ export default function Footer() {
           <nav aria-label="Product">
             <p className={headingClass}>Product</p>
             <ul className="space-y-2">
-              {SECTION_LINKS.map(({ hash, label }) => (
-                <li key={hash}>
-                  {onLanding ? (
-                    <a href={hash} className={linkClass}>
-                      {label}
-                    </a>
-                  ) : (
-                    <Link to={{ pathname: "/", hash }} className={linkClass}>
-                      {label}
-                    </Link>
-                  )}
+              {SECTION_LINKS.map(({ id, label }) => (
+                <li key={id}>
+                  <SectionLink id={id} className={linkClass}>
+                    {label}
+                  </SectionLink>
                 </li>
               ))}
             </ul>
