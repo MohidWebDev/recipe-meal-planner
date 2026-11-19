@@ -25,7 +25,7 @@ function Layout() {
 
   return (
     <div
-      className={`flex min-h-screen flex-col ${isAuthenticated ? "pb-16 md:pb-0" : ""}`}
+      className={`flex min-h-screen flex-col ${isAuthenticated ? "pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0" : ""}`}
     >
       <Navbar />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
