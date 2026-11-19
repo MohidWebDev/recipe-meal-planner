@@ -10,11 +10,6 @@ import Features from "../components/landing/Features";
 import CtaBand from "../components/landing/CtaBand";
 import Footer from "../components/common/Footer";
 
-const SECTION_LINKS = [
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#features", label: "Features" },
-];
-
 export default function Landing() {
   const { initializing } = useAuth();
 
@@ -46,7 +41,7 @@ export default function Landing() {
       >
         Skip to content
       </a>
-      <Navbar sectionLinks={SECTION_LINKS} logoHref="#top" />
+      <Navbar />
       <main id="main" tabIndex={-1} className="focus:outline-none">
         <Hero />
         <HowItWorks />

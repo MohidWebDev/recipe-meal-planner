@@ -1,7 +1,7 @@
 import { ArrowRight, Check, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import DemoButton from "./DemoButton";
+import DemoButton from "../common/DemoButton";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const TODAY = 2; // Wed, highlighted in the mock
