@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { scrollToTop } from "../../utils/smoothScroll";
 import Logo from "./Logo";
 
 const LINKS = [
@@ -51,6 +52,19 @@ export default function Navbar({ sectionLinks = [], logoHref }) {
 
   const hasSections = !isAuthenticated && sectionLinks.length > 0;
   const closeMenu = () => setMenuOpen(false);
+
+  const handleLogoClick = (event) => {
+    event.preventDefault();
+    scrollToTop();
+    // Remove a leftover hash (e.g. #features) without adding a history entry
+    if (window.location.hash) {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search,
+      );
+    }
+  };
 
   // Close the mobile menu whenever the route changes.
   useEffect(() => setMenuOpen(false), [location.pathname]);
@@ -104,7 +118,12 @@ export default function Navbar({ sectionLinks = [], logoHref }) {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         {logoHref ? (
-          <a href={logoHref} className={logoLinkClass} aria-label="Back to top">
+          <a
+            href={logoHref}
+            onClick={handleLogoClick}
+            className={logoLinkClass}
+            aria-label="Back to top"
+          >
             {logo}
           </a>
         ) : (
