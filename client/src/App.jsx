@@ -4,6 +4,7 @@ import BackToTop from "./components/common/BackToTop";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import ScrollToTop from "./components/common/ScrollToTop";
+import Footer from "./components/common/Footer";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -28,10 +29,7 @@ function Layout() {
           <Outlet />
         </div>
       </main>
-      <footer className="border-t border-line py-6 text-center text-xs text-subtle">
-        Recipe <span className="text-accent">&amp;</span> Meal Planner · MERN
-        capstone
-      </footer>
+      <Footer />
       <BackToTop />
     </div>
   );

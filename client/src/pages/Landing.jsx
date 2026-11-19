@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
@@ -6,7 +7,7 @@ import Hero from "../components/landing/Hero";
 import HowItWorks from "../components/landing/HowItWorks";
 import Features from "../components/landing/Features";
 import CtaBand from "../components/landing/CtaBand";
-import LandingFooter from "../components/landing/LandingFooter";
+import Footer from "../components/common/Footer";
 
 const SECTION_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -23,6 +24,13 @@ export default function Landing() {
       document.title = previous;
     };
   }, []);
+
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (initializing || !hash) return;
+    document.getElementById(hash.slice(1))?.scrollIntoView();
+  }, [hash, initializing]);
 
   if (initializing) return <Loader fullScreen label="Loading…" />;
 
@@ -41,7 +49,7 @@ export default function Landing() {
         <Features />
         <CtaBand />
       </main>
-      <LandingFooter />
+      <Footer />
     </div>
   );
 }
