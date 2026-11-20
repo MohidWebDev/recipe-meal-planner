@@ -8,7 +8,6 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import ScrollToTop from "./components/common/ScrollToTop";
 import Footer from "./components/common/Footer";
 import BottomNav from "./components/common/BottomNav";
-import useAuth from "./hooks/useAuth";
 import Landing from "./pages/Landing";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -45,12 +44,9 @@ const GATES = {
 
 function Layout() {
   const { pathname } = useLocation();
-  const { isAuthenticated } = useAuth();
 
   return (
-    <div
-      className={`flex min-h-screen flex-col ${isAuthenticated ? "pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0" : ""}`}
-    >
+    <div className="flex min-h-screen flex-col pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0">
       <Navbar />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
         {/* Keyed by path so each page fades in when you navigate */}
@@ -59,8 +55,8 @@ function Layout() {
         </div>
       </main>
       <Footer />
-      {isAuthenticated && <BottomNav />}
-      <BackToTop raised={isAuthenticated} />
+      <BottomNav />
+      <BackToTop raised />
     </div>
   );
 }

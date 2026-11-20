@@ -9,6 +9,7 @@ import HowItWorks from "../components/landing/HowItWorks";
 import Features from "../components/landing/Features";
 import CtaBand from "../components/landing/CtaBand";
 import Footer from "../components/common/Footer";
+import BottomNav from "../components/common/BottomNav";
 
 export default function Landing() {
   const { initializing } = useAuth();
@@ -34,7 +35,10 @@ export default function Landing() {
   if (initializing) return <Loader fullScreen label="Loading…" />;
 
   return (
-    <div id="top" className="min-h-screen">
+    <div
+      id="top"
+      className="min-h-screen pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+    >
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 btn-accent"
@@ -49,6 +53,7 @@ export default function Landing() {
         <CtaBand />
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }
