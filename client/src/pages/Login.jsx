@@ -1,18 +1,19 @@
-import { LogIn, Sparkles } from 'lucide-react';
-import { useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { getErrorMessage, getFieldErrors } from '../api/axios';
-import AuthLayout from '../components/common/AuthLayout';
-import useAuth from '../hooks/useAuth';
-import useToast from '../hooks/useToast';
+import { LogIn, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { getErrorMessage, getFieldErrors } from "../api/axios";
+import AuthLayout from "../components/common/AuthLayout";
+import useAuth from "../hooks/useAuth";
+import useToast from "../hooks/useToast";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 
 const validate = ({ email, password }) => {
   const errors = {};
-  if (!email.trim()) errors.email = 'Email is required';
-  else if (!EMAIL_REGEX.test(email.trim())) errors.email = 'Please enter a valid email';
-  if (!password) errors.password = 'Password is required';
+  if (!email.trim()) errors.email = "Email is required";
+  else if (!EMAIL_REGEX.test(email.trim()))
+    errors.email = "Please enter a valid email";
+  if (!password) errors.password = "Password is required";
   return errors;
 };
 
@@ -21,11 +22,11 @@ export default function Login() {
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from?.pathname || '/recipes';
+  const redirectTo = location.state?.from?.pathname || "/recipes";
 
-  const [values, setValues] = useState({ email: '', password: '' });
+  const [values, setValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   if (isAuthenticated) return <Navigate to={redirectTo} replace />;
@@ -38,15 +39,18 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setServerError('');
+    setServerError("");
     const clientErrors = validate(values);
     setErrors(clientErrors);
     if (Object.keys(clientErrors).length) return;
 
     setSubmitting(true);
     try {
-      const user = await login({ email: values.email.trim(), password: values.password });
-      toast.success(`Welcome back, ${user.name.split(' ')[0]}!`);
+      const user = await login({
+        email: values.email.trim(),
+        password: values.password,
+      });
+      toast.success(`Welcome back, ${user.name.split(" ")[0]}!`);
       navigate(redirectTo, { replace: true });
     } catch (error) {
       setErrors(getFieldErrors(error));
@@ -56,13 +60,20 @@ export default function Login() {
   };
 
   const fillDemo = () => {
-    setValues({ email: 'demo@example.com', password: 'demo1234' });
+    setValues({ email: "demo@example.com", password: "demo1234" });
     setErrors({});
   };
 
   return (
-    <AuthLayout title="Welcome back" subtitle="Log in to plan your meals for the week.">
-      <form onSubmit={handleSubmit} noValidate className="card space-y-5 p-6 sm:p-7">
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Log in to plan your meals for the week."
+    >
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="card space-y-5 p-6 sm:p-7"
+      >
         {serverError && (
           <div role="alert" className="alert-error animate-fade-in">
             {serverError}
@@ -79,7 +90,7 @@ export default function Login() {
             type="email"
             autoComplete="email"
             placeholder="you@example.com"
-            className={`input ${errors.email ? 'input-error' : ''}`}
+            className={`input ${errors.email ? "input-error" : ""}`}
             value={values.email}
             onChange={handleChange}
           />
@@ -96,16 +107,20 @@ export default function Login() {
             type="password"
             autoComplete="current-password"
             placeholder="••••••••"
-            className={`input ${errors.password ? 'input-error' : ''}`}
+            className={`input ${errors.password ? "input-error" : ""}`}
             value={values.password}
             onChange={handleChange}
           />
           {errors.password && <p className="field-error">{errors.password}</p>}
         </div>
 
-        <button type="submit" className="btn-accent w-full py-3" disabled={submitting}>
+        <button
+          type="submit"
+          className="btn-accent w-full py-3"
+          disabled={submitting}
+        >
           {submitting ? (
-            'Logging in…'
+            "Logging in…"
           ) : (
             <>
               <LogIn className="h-4 w-4" aria-hidden="true" /> Log in
@@ -114,8 +129,8 @@ export default function Login() {
         </button>
 
         <p className="text-center text-sm text-muted">
-          No account yet?{' '}
-          <Link to="/register" className="link">
+          No account yet?{" "}
+          <Link to="/register" state={location.state} className="link">
             Create one
           </Link>
         </p>
@@ -123,9 +138,14 @@ export default function Login() {
 
       <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-brand/30 bg-brand/10 px-4 py-3 text-sm">
         <p className="text-muted">
-          <span className="font-semibold text-fg">Demo:</span> demo@example.com / demo1234
+          <span className="font-semibold text-fg">Demo:</span> demo@example.com
+          / demo1234
         </p>
-        <button type="button" onClick={fillDemo} className="link inline-flex shrink-0 items-center gap-1">
+        <button
+          type="button"
+          onClick={fillDemo}
+          className="link inline-flex shrink-0 items-center gap-1"
+        >
           <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
           Fill in demo credentials
         </button>

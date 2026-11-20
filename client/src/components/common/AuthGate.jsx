@@ -34,7 +34,10 @@ export default function AuthGate({ icon: Icon, title, message }) {
 
         <p className="mt-5 text-sm text-muted">
           Just looking around?{" "}
-          <DemoButton className="link inline-flex items-center gap-1.5 font-medium" />
+          <DemoButton
+            redirectTo={location.pathname}
+            className="link inline-flex items-center gap-1.5 font-medium"
+          />
         </p>
       </div>
     </section>

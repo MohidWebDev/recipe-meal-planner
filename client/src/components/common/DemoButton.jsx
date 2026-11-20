@@ -9,6 +9,7 @@ const DEMO_CREDENTIALS = { email: "demo@example.com", password: "demo1234" };
 
 export default function DemoButton({
   className = "btn-secondary px-6 py-3 text-base",
+  redirectTo = "/recipes",
 }) {
   const { login } = useAuth();
   const toast = useToast();
@@ -22,7 +23,7 @@ export default function DemoButton({
       toast.success(
         `Welcome, ${user.name.split(" ")[0]}! You are using the demo account.`,
       );
-      navigate("/recipes", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       toast.error(getErrorMessage(error));
       setLoading(false);
