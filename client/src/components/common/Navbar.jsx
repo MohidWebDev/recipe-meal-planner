@@ -63,17 +63,17 @@ export default function Navbar() {
         scrolled ? "border-line bg-ink/85" : "border-transparent bg-ink/40"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
         <Link
           to="/"
           onClick={handleLogoClick}
           className={`${logoLinkClass} md:justify-self-start`}
           aria-label={onLanding ? "Back to top" : "Go to home page"}
         >
-          <span className="sm:hidden">
+          <span className="lg:hidden">
             <Logo showText={false} />
           </span>
-          <span className="hidden sm:inline">
+          <span className="hidden lg:inline">
             <Logo />
           </span>
         </Link>
@@ -96,56 +96,45 @@ export default function Navbar() {
             </NavLink>
           </nav>
 
-          {isAuthenticated && !onLanding && (
-            <>
-              <span
-                className="mx-2 hidden h-5 w-px bg-line md:block"
-                aria-hidden="true"
-              />
-              <nav
-                className="hidden items-center gap-1 md:flex"
-                aria-label="Main"
-              >
-                {APP_LINKS.map(({ to, label, icon: Icon }) => (
-                  <NavLink key={to} to={to} className={linkClass} title={label}>
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                    {/* Labels show from lg up; tablets get icons only to save space */}
-                    <span className="hidden lg:inline">{label}</span>
-                    <span className="sr-only lg:hidden">{label}</span>
-                  </NavLink>
-                ))}
-              </nav>
-            </>
-          )}
+          <span
+            className="mx-2 hidden h-5 w-px bg-line md:block"
+            aria-hidden="true"
+          />
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+            {APP_LINKS.map(({ to, label, icon: Icon }) => (
+              <NavLink key={to} to={to} className={linkClass} title={label}>
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {/* Labels show from xl up; smaller screens get icons only to save space */}
+                <span className="hidden xl:inline">{label}</span>
+                <span className="sr-only xl:hidden">{label}</span>
+              </NavLink>
+            ))}
+          </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 md:justify-self-end">
+        <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
           {isAuthenticated ? (
             <>
-              {onLanding ? (
-                <Link to="/recipes" className="btn-accent py-2">
-                  Open app
+              {!onRecipeForm && (
+                <Link
+                  to="/recipes/new"
+                  className="btn-accent py-2"
+                  aria-label="New recipe"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">New recipe</span>
                 </Link>
-              ) : (
-                !onRecipeForm && (
-                  <Link
-                    to="/recipes/new"
-                    className="btn-accent py-2"
-                    aria-label="New recipe"
-                  >
-                    <Plus className="h-4 w-4" aria-hidden="true" />
-                    <span className="hidden sm:inline">New recipe</span>
-                  </Link>
-                )
               )}
               <UserMenu />
             </>
           ) : (
             <>
-              <NavLink to="/login" className={linkClass}>
-                Log in
-              </NavLink>
               <span className="hidden sm:inline-flex">
+                <NavLink to="/login" className={linkClass}>
+                  Log in
+                </NavLink>
+              </span>
+              <span className="hidden lg:inline-flex">
                 <DemoButton className="btn-secondary py-2" />
               </span>
               <Link to="/register" className="btn-accent py-2">
