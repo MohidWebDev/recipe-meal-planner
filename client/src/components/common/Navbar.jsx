@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Home, Info, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -10,6 +10,14 @@ import UserMenu from "./UserMenu";
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition duration-200 ${
+    isActive
+      ? "bg-accent/10 text-accent"
+      : "text-muted hover:bg-raised hover:text-fg"
+  }`;
+
+// Home / About links: icon on top with a small label on phones, icon + label in a row from sm up.
+const centerLinkClass = ({ isActive }) =>
+  `flex flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1.5 text-[11px] font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:flex-row sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm ${
     isActive
       ? "bg-accent/10 text-accent"
       : "text-muted hover:bg-raised hover:text-fg"
@@ -55,11 +63,11 @@ export default function Navbar() {
         scrolled ? "border-line bg-ink/85" : "border-transparent bg-ink/40"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
         <Link
           to="/"
           onClick={handleLogoClick}
-          className={logoLinkClass}
+          className={`${logoLinkClass} md:justify-self-start`}
           aria-label={onLanding ? "Back to top" : "Go to home page"}
         >
           <span className="sm:hidden">
@@ -70,18 +78,48 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {isAuthenticated && !onLanding && (
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
-            {APP_LINKS.map(({ to, label, icon: Icon }) => (
-              <NavLink key={to} to={to} className={linkClass}>
-                <Icon className="h-4 w-4" aria-hidden="true" />
-                {label}
-              </NavLink>
-            ))}
+        {/* Center: Home and About, plus the app links for logged-in users on desktop */}
+        <div className="flex items-center gap-1 md:justify-self-center">
+          <nav className="flex items-center gap-1" aria-label="Primary">
+            <NavLink
+              to="/"
+              end
+              onClick={handleLogoClick}
+              className={centerLinkClass}
+            >
+              <Home className="h-5 w-5 sm:h-4 sm:w-4" aria-hidden="true" />
+              Home
+            </NavLink>
+            <NavLink to="/about" className={centerLinkClass}>
+              <Info className="h-5 w-5 sm:h-4 sm:w-4" aria-hidden="true" />
+              About
+            </NavLink>
           </nav>
-        )}
 
-        <div className="flex items-center gap-2 sm:gap-3">
+          {isAuthenticated && !onLanding && (
+            <>
+              <span
+                className="mx-2 hidden h-5 w-px bg-line md:block"
+                aria-hidden="true"
+              />
+              <nav
+                className="hidden items-center gap-1 md:flex"
+                aria-label="Main"
+              >
+                {APP_LINKS.map(({ to, label, icon: Icon }) => (
+                  <NavLink key={to} to={to} className={linkClass} title={label}>
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    {/* Labels show from lg up; tablets get icons only to save space */}
+                    <span className="hidden lg:inline">{label}</span>
+                    <span className="sr-only lg:hidden">{label}</span>
+                  </NavLink>
+                ))}
+              </nav>
+            </>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 sm:gap-3 md:justify-self-end">
           {isAuthenticated ? (
             <>
               {onLanding ? (
