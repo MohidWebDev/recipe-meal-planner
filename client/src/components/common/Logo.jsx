@@ -7,7 +7,7 @@ export default function Logo({ showText = true }) {
         <CookingPot className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
       </span>
       {showText && (
-        <span className="font-display text-xl leading-tight font-bold text-fg">
+        <span className="origin-left font-display text-xl leading-tight font-bold text-fg transition duration-200 group-hover:scale-105 group-hover:[text-shadow:0_0_18px_rgba(212,255,36,0.55)]">
           Meal<span className="text-accent">wise</span>
         </span>
       )}
