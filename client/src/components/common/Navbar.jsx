@@ -1,9 +1,8 @@
-import { Home, Info, Plus } from "lucide-react";
+import { Home, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { scrollToTop } from "../../utils/smoothScroll";
-import DemoButton from "./DemoButton";
 import Logo from "./Logo";
 import { APP_LINKS } from "./navLinks";
 import UserMenu from "./UserMenu";
@@ -32,8 +31,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   const onLanding = pathname === "/";
-  const onRecipeForm =
-    pathname === "/recipes/new" || pathname.endsWith("/edit");
 
   // On the landing page the logo scrolls to the top instead of navigating.
   const handleLogoClick = (event) => {
@@ -87,11 +84,17 @@ export default function Navbar() {
               onClick={handleLogoClick}
               className={centerLinkClass}
             >
-              <Home className="h-5 w-5 sm:h-4 sm:w-4" aria-hidden="true" />
+              <Home
+                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+                aria-hidden="true"
+              />
               Home
             </NavLink>
             <NavLink to="/about" className={centerLinkClass}>
-              <Info className="h-5 w-5 sm:h-4 sm:w-4" aria-hidden="true" />
+              <Info
+                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+                aria-hidden="true"
+              />
               About
             </NavLink>
           </nav>
@@ -103,7 +106,7 @@ export default function Navbar() {
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
             {APP_LINKS.map(({ to, label, icon: Icon }) => (
               <NavLink key={to} to={to} className={linkClass} title={label}>
-                <Icon className="h-4 w-4" aria-hidden="true" />
+                <Icon className="h-3.75 w-3.75" aria-hidden="true" />
                 {/* Labels show from xl up; smaller screens get icons only to save space */}
                 <span className="hidden xl:inline">{label}</span>
                 <span className="sr-only xl:hidden">{label}</span>
@@ -114,28 +117,13 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
           {isAuthenticated ? (
-            <>
-              {!onRecipeForm && (
-                <Link
-                  to="/recipes/new"
-                  className="btn-accent py-2"
-                  aria-label="New recipe"
-                >
-                  <Plus className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">New recipe</span>
-                </Link>
-              )}
-              <UserMenu />
-            </>
+            <UserMenu />
           ) : (
             <>
               <span className="hidden sm:inline-flex">
                 <NavLink to="/login" className={linkClass}>
                   Log in
                 </NavLink>
-              </span>
-              <span className="hidden lg:inline-flex">
-                <DemoButton className="btn-secondary py-2" />
               </span>
               <Link to="/register" className="btn-accent py-2">
                 Get started
