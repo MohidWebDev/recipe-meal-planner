@@ -1,6 +1,6 @@
 import { CircleHelp, LogOut, Settings, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import defaultAvatar from "../../assets/default-avatar.png";
 
@@ -10,6 +10,12 @@ const itemClass =
 export default function UserMenu() {
   const { user, logout } = useAuth();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   const [open, setOpen] = useState(false);
   const [imgFailed, setImgFailed] = useState(false);
   const ref = useRef(null);
@@ -86,7 +92,7 @@ export default function UserMenu() {
           <button
             type="button"
             role="menuitem"
-            onClick={logout}
+            onClick={handleLogout}
             className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
