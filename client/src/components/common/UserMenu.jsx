@@ -2,14 +2,7 @@ import { CircleHelp, LogOut, Settings, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-
-const initials = (name = "") =>
-  name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0].toUpperCase())
-    .join("");
+import defaultAvatar from "../../assets/default-avatar.png";
 
 const itemClass =
   "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-fg transition hover:bg-raised focus:outline-none focus-visible:bg-raised focus-visible:ring-2 focus-visible:ring-accent";
@@ -39,7 +32,7 @@ export default function UserMenu() {
     };
   }, [open]);
 
-  const showImage = user?.avatar && !imgFailed;
+  const avatarSrc = user?.avatar && !imgFailed ? user.avatar : defaultAvatar;
 
   return (
     <div ref={ref} className="relative">
@@ -49,18 +42,14 @@ export default function UserMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Open account menu"
-        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand text-xs font-bold text-white ring-2 ring-brand/30 transition hover:ring-brand/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        className="h-10 w-10 cursor-pointer overflow-hidden rounded-full ring-2 ring-brand/30 transition hover:ring-brand/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       >
-        {showImage ? (
-          <img
-            src={user.avatar}
-            alt=""
-            className="h-full w-full object-cover"
-            onError={() => setImgFailed(true)}
-          />
-        ) : (
-          initials(user?.name)
-        )}
+        <img
+          src={avatarSrc}
+          alt=""
+          className="h-full w-full object-cover"
+          onError={() => setImgFailed(true)}
+        />
       </button>
 
       {open && (
@@ -98,7 +87,7 @@ export default function UserMenu() {
             type="button"
             role="menuitem"
             onClick={logout}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
             Log out
