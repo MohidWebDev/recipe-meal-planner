@@ -2,6 +2,7 @@ import { UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { getErrorMessage, getFieldErrors } from "../api/axios";
+import { getReturnTo } from "../utils/returnTo";
 import AuthLayout from "../components/common/AuthLayout";
 import useAuth from "../hooks/useAuth";
 import useToast from "../hooks/useToast";
@@ -60,7 +61,7 @@ export default function Register() {
   const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from?.pathname || "/recipes";
+  const redirectTo = location.state?.from?.pathname || getReturnTo();
 
   const [values, setValues] = useState({
     name: "",
