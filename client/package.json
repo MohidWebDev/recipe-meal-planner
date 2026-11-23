@@ -2,7 +2,7 @@
   "name": "recipe-meal-planner-client",
   "private": true,
   "version": "1.0.0",
-  "description": "React (Vite) front end for the Recipe & Meal Planner MERN app",
+  "description": "React (Vite) front end for the Mealwise MERN app",
   "type": "module",
   "scripts": {
     "dev": "vite",

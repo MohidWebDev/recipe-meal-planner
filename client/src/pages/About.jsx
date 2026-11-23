@@ -42,7 +42,7 @@ export default function About() {
 
   useEffect(() => {
     const previous = document.title;
-    document.title = "About · Recipe & Meal Planner";
+    document.title = "About · Mealwise";
     return () => {
       document.title = previous;
     };
@@ -67,9 +67,9 @@ export default function About() {
           week.
         </p>
         <p className="text-muted">
-          Recipe &amp; Meal Planner brings it together: save a recipe once, plan
-          it into your week, and get a single shopping list with every
-          ingredient merged, so you buy each thing once.
+          Mealwise brings it together: save a recipe once, plan it into your
+          week, and get a single shopping list with every ingredient merged, so
+          you buy each thing once.
         </p>
       </section>
 

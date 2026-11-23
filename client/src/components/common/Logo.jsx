@@ -1,4 +1,4 @@
-import { CookingPot } from 'lucide-react';
+import { CookingPot } from "lucide-react";
 
 export default function Logo({ showText = true }) {
   return (
@@ -8,7 +8,7 @@ export default function Logo({ showText = true }) {
       </span>
       {showText && (
         <span className="font-display text-base leading-tight font-bold text-fg">
-          Recipe <span className="text-accent">&amp;</span> Meal Planner
+          Meal<span className="text-accent">wise</span>
         </span>
       )}
     </span>

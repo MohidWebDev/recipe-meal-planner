@@ -1,7 +1,7 @@
 {
   "name": "recipe-meal-planner-server",
   "version": "1.0.0",
-  "description": "REST API for the Recipe & Meal Planner MERN app",
+  "description": "REST API for the Mealwise MERN app",
   "type": "module",
   "main": "src/server.js",
   "scripts": {

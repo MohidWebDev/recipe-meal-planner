@@ -1,4 +1,4 @@
-# Recipe & Meal Planner
+# Mealwise
 
 **Plan your week of meals and get your shopping list automatically.**
 
@@ -6,7 +6,7 @@
 
 ## What is it?
 
-Recipe & Meal Planner is a web app that helps you decide what to cook and what to buy.
+Mealwise is a web app that helps you decide what to cook and what to buy.
 
 You save your favourite recipes in one place, choose what you want to eat each day of the week, and the app tells you exactly which ingredients to buy, with the right amounts.
 

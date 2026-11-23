@@ -16,7 +16,7 @@ export default function Landing() {
 
   useEffect(() => {
     const previous = document.title;
-    document.title = "Recipe & Meal Planner · Plan the week, shop once";
+    document.title = "Mealwise · Plan the week, shop once";
     return () => {
       document.title = previous;
     };
