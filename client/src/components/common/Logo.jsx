@@ -3,11 +3,11 @@ import { CookingPot } from "lucide-react";
 export default function Logo({ showText = true }) {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-ink shadow-[0_6px_20px_-8px_rgba(212,255,36,0.7)] transition duration-300 group-hover:rotate-[-8deg]">
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-ink shadow-[0_6px_20px_-8px_rgba(212,255,36,0.7)] transition duration-200 group-hover:rotate-[-8deg]">
         <CookingPot className="h-5 w-5" strokeWidth={2.25} aria-hidden="true" />
       </span>
       {showText && (
-        <span className="origin-left font-display text-xl leading-tight font-bold text-fg transition duration-200 group-hover:scale-105 group-hover:[text-shadow:0_0_18px_rgba(212,255,36,0.55)]">
+        <span className="origin-left font-display text-xl leading-tight font-bold text-fg transition duration-200 group-hover:scale-105">
           Meal<span className="text-accent">wise</span>
         </span>
       )}

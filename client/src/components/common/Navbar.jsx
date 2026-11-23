@@ -75,35 +75,25 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Center: Home and About, plus the app links for logged-in users on desktop */}
-        <div className="flex items-center gap-1 md:justify-self-center">
-          <nav className="flex items-center gap-1" aria-label="Primary">
-            <NavLink
-              to="/"
-              end
-              onClick={handleLogoClick}
-              className={centerLinkClass}
-            >
-              <Home
-                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
-                aria-hidden="true"
-              />
-              Home
-            </NavLink>
-            <NavLink to="/about" className={centerLinkClass}>
-              <Info
-                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
-                aria-hidden="true"
-              />
-              About
-            </NavLink>
-          </nav>
+        {/* Center: Home, the app links (desktop, logged-in), then About */}
+        <nav
+          className="flex items-center gap-1 md:justify-self-center"
+          aria-label="Primary"
+        >
+          <NavLink
+            to="/"
+            end
+            onClick={handleLogoClick}
+            className={centerLinkClass}
+          >
+            <Home
+              className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+              aria-hidden="true"
+            />
+            Home
+          </NavLink>
 
-          <span
-            className="mx-2 hidden h-5 w-px bg-line md:block"
-            aria-hidden="true"
-          />
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+          <div className="hidden items-center gap-1 md:flex">
             {APP_LINKS.map(({ to, label, icon: Icon }) => (
               <NavLink key={to} to={to} className={linkClass} title={label}>
                 <Icon className="h-3.75 w-3.75" aria-hidden="true" />
@@ -112,8 +102,16 @@ export default function Navbar() {
                 <span className="sr-only xl:hidden">{label}</span>
               </NavLink>
             ))}
-          </nav>
-        </div>
+          </div>
+
+          <NavLink to="/about" className={centerLinkClass}>
+            <Info
+              className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+              aria-hidden="true"
+            />
+            About
+          </NavLink>
+        </nav>
 
         <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
           {isAuthenticated ? (
