@@ -1,12 +1,12 @@
-import { CircleAlert, CircleCheck, Info, X } from 'lucide-react';
-import { createContext, useCallback, useMemo, useRef, useState } from 'react';
+import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
+import { createContext, useCallback, useMemo, useRef, useState } from "react";
 
 export const ToastContext = createContext(null);
 
 const VARIANTS = {
-  success: { icon: CircleCheck, className: 'text-accent' },
-  error: { icon: CircleAlert, className: 'text-danger' },
-  info: { icon: Info, className: 'text-brand-light' },
+  success: { icon: CircleCheck, className: "text-accent" },
+  error: { icon: CircleAlert, className: "text-danger" },
+  info: { icon: Info, className: "text-brand-light" },
 };
 
 const EXIT_MS = 200;
@@ -15,34 +15,42 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const idRef = useRef(0);
 
-  const remove = useCallback((id) => setToasts((list) => list.filter((t) => t.id !== id)), []);
+  const remove = useCallback(
+    (id) => setToasts((list) => list.filter((t) => t.id !== id)),
+    [],
+  );
 
   // Fade the toast out first, then remove it.
   const dismiss = useCallback(
     (id) => {
-      setToasts((list) => list.map((t) => (t.id === id ? { ...t, leaving: true } : t)));
+      setToasts((list) =>
+        list.map((t) => (t.id === id ? { ...t, leaving: true } : t)),
+      );
       setTimeout(() => remove(id), EXIT_MS);
     },
-    [remove]
+    [remove],
   );
 
   const show = useCallback(
-    (message, type = 'info', duration = 3500) => {
+    (message, type = "info", duration = 3500) => {
       const id = ++idRef.current;
-      setToasts((list) => [...list.slice(-3), { id, message, type, leaving: false }]);
+      setToasts((list) => [
+        ...list.slice(-3),
+        { id, message, type, leaving: false },
+      ]);
       setTimeout(() => dismiss(id), duration);
     },
-    [dismiss]
+    [dismiss],
   );
 
   const api = useMemo(
     () => ({
       show,
-      success: (message) => show(message, 'success'),
-      error: (message) => show(message, 'error', 5000),
-      info: (message) => show(message, 'info'),
+      success: (message) => show(message, "success"),
+      error: (message) => show(message, "error", 5000),
+      info: (message) => show(message, "info"),
     }),
-    [show]
+    [show],
   );
 
   return (
@@ -50,19 +58,23 @@ export function ToastProvider({ children }) {
       {children}
       <div
         aria-live="polite"
-        className="pointer-events-none fixed inset-x-0 top-20 z-60 flex flex-col items-center gap-2 px-4 sm:items-end sm:pr-6"
+        className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] z-60 flex flex-col items-center gap-2 px-4 sm:items-end sm:pr-6 md:bottom-6"
       >
         {toasts.map((toast) => {
-          const { icon: Icon, className } = VARIANTS[toast.type] ?? VARIANTS.info;
+          const { icon: Icon, className } =
+            VARIANTS[toast.type] ?? VARIANTS.info;
           return (
             <div
               key={toast.id}
-              role={toast.type === 'error' ? 'alert' : 'status'}
+              role={toast.type === "error" ? "alert" : "status"}
               className={`pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl border border-line-strong bg-raised/95 px-4 py-3 text-sm text-fg shadow-xl shadow-black/50 backdrop-blur transition duration-200 ${
-                toast.leaving ? 'translate-x-4 opacity-0' : 'animate-slide-in'
+                toast.leaving ? "translate-x-4 opacity-0" : "animate-slide-in"
               }`}
             >
-              <Icon className={`mt-0.5 h-4.5 w-4.5 shrink-0 ${className}`} aria-hidden="true" />
+              <Icon
+                className={`mt-0.5 h-4.5 w-4.5 shrink-0 ${className}`}
+                aria-hidden="true"
+              />
               <p className="flex-1 leading-snug">{toast.message}</p>
               <button
                 type="button"
