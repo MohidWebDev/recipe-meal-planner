@@ -1,15 +1,26 @@
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import * as authApi from '../api/auth.api';
-import { TOKEN_KEY, setUnauthorizedHandler } from '../api/axios';
-import useToast from '../hooks/useToast';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import { TOKEN_KEY, setUnauthorizedHandler } from "../api/axios";
+import * as authApi from "../api/auth.api";
+import useToast from "../hooks/useToast";
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   // True while we check a stored token on first load.
-  const [initializing, setInitializing] = useState(() => Boolean(localStorage.getItem(TOKEN_KEY)));
+  const [initializing, setInitializing] = useState(() =>
+    Boolean(localStorage.getItem(TOKEN_KEY)),
+  );
   const toast = useToast();
+  const navigate = useNavigate();
   const userRef = useRef(null);
 
   useEffect(() => {
@@ -24,11 +35,14 @@ export function AuthProvider({ children }) {
   // Any 401 from the API (expired/invalid token) logs the user out.
   useEffect(() => {
     setUnauthorizedHandler(() => {
-      if (userRef.current) toast.error('Your session has expired. Please log in again.');
+      if (userRef.current) {
+        toast.error("Your session has expired. Please log in again.");
+        navigate("/login");
+      }
       setUser(null);
     });
     return () => setUnauthorizedHandler(null);
-  }, [toast]);
+  }, [toast, navigate]);
 
   // On startup, restore the session from the stored token.
   useEffect(() => {
@@ -52,18 +66,31 @@ export function AuthProvider({ children }) {
     return nextUser;
   }, []);
 
-  const login = useCallback(async (credentials) => saveSession(await authApi.login(credentials)), [saveSession]);
+  const login = useCallback(
+    async (credentials) => saveSession(await authApi.login(credentials)),
+    [saveSession],
+  );
 
-  const register = useCallback(async (data) => saveSession(await authApi.register(data)), [saveSession]);
+  const register = useCallback(
+    async (data) => saveSession(await authApi.register(data)),
+    [saveSession],
+  );
 
   const logout = useCallback(() => {
     clearSession();
-    toast.success('You have been logged out.');
+    toast.success("You have been logged out.");
   }, [clearSession, toast]);
 
   const value = useMemo(
-    () => ({ user, isAuthenticated: Boolean(user), initializing, login, register, logout }),
-    [user, initializing, login, register, logout]
+    () => ({
+      user,
+      isAuthenticated: Boolean(user),
+      initializing,
+      login,
+      register,
+      logout,
+    }),
+    [user, initializing, login, register, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
