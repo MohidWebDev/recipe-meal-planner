@@ -73,7 +73,7 @@ export default function Testimonials() {
   };
 
   const arrowClass =
-    "flex h-8 w-8 items-center justify-center rounded-md border border-line-strong text-muted transition duration-200 hover:border-accent/50 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-35";
+    "flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-line-strong text-muted transition duration-200 hover:border-accent/50 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-35";
 
   return (
     <section
@@ -120,17 +120,17 @@ export default function Testimonials() {
         <ul
           ref={trackRef}
           onScroll={updateEdges}
-          className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto pr-4 pb-2 [scrollbar-width:none] sm:pr-6 [&::-webkit-scrollbar]:hidden ${EDGE_PADDING}`}
+          className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto pr-4 pb-2 scrollbar-none sm:pr-6 [&::-webkit-scrollbar]:hidden ${EDGE_PADDING}`}
         >
           {TESTIMONIALS.map(({ quote, name, role, tag, image }) => (
             <li
               key={name}
               data-card
-              className="w-[88%] shrink-0 snap-start sm:w-136 lg:w-184"
+              className="w-[85%] shrink-0 snap-start sm:w-120 lg:w-160"
             >
-              <figure className="flex h-full flex-col gap-5 rounded-md bg-overlay p-3.5 sm:min-h-72 sm:flex-row sm:gap-7">
+              <figure className="flex h-full flex-col gap-4 bg-overlay p-3 sm:min-h-64 sm:flex-row sm:gap-6">
                 {/* Photo tile with the label centered on top, like a logo card */}
-                <div className="relative h-56 w-full shrink-0 overflow-hidden rounded-sm sm:h-auto sm:w-48 lg:w-52">
+                <div className="relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-40 lg:w-44">
                   <img
                     src={image}
                     alt=""
@@ -148,7 +148,7 @@ export default function Testimonials() {
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between gap-8 py-1 sm:pr-6">
-                  <blockquote className="font-display text-xl leading-[1.3] font-normal tracking-[-0.01em] text-fg lg:text-[22px]">
+                  <blockquote className="font-display text-lg leading-[1.3] font-normal tracking-[-0.01em] text-fg lg:text-xl">
                     “{quote}”
                   </blockquote>
                   <figcaption>
