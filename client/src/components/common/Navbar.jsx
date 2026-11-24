@@ -21,17 +21,19 @@ const centerLinkClass = ({ isActive }) =>
 const logoLinkClass =
   "group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
+// Survives Navbar remounts (Landing and Layout each render their own Navbar),
+// so the underline can slide in from where it was on the previous page.
+let lastIndicator = null;
+
 export default function Navbar() {
   const { isAuthenticated } = useAuth();
   const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef(null);
-  const [indicator, setIndicator] = useState({
-    left: 0,
-    width: 0,
-    visible: false,
-  });
-  const [animate, setAnimate] = useState(false);
+  const [indicator, setIndicator] = useState(
+    lastIndicator ?? { left: 0, width: 0, visible: false },
+  );
+  const [animate, setAnimate] = useState(lastIndicator !== null);
 
   // Move the underline under whichever link is active.
   useLayoutEffect(() => {
@@ -54,6 +56,7 @@ export default function Navbar() {
         width: linkRect.width,
         visible: true,
       };
+      lastIndicator = next;
       setIndicator((prev) =>
         prev.left === next.left && prev.width === next.width && prev.visible
           ? prev
