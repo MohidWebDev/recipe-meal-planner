@@ -21,6 +21,9 @@ const centerLinkClass = ({ isActive }) =>
 const logoLinkClass =
   "group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
+const loginClass =
+  "rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-fg transition duration-200 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+
 // Survives Navbar remounts (Landing and Layout each render their own Navbar),
 // so the underline can slide in from where it was on the previous page.
 let lastIndicator = null;
@@ -105,94 +108,115 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header
-      className={`sticky top-0 z-40 border-b backdrop-blur-xl transition-colors duration-300 ${
-        scrolled ? "border-line bg-ink/85" : "border-transparent bg-ink/40"
-      }`}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
-        <Link
-          to="/"
-          onClick={handleLogoClick}
-          className={`${logoLinkClass} md:justify-self-start`}
-          aria-label={onLanding ? "Back to top" : "Go to home page"}
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
+      <div
+        className={`relative isolate mx-auto max-w-7xl rounded-2xl border bg-surface transition-[border-color,box-shadow] duration-300 ${
+          scrolled
+            ? "border-white/15 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
+            : "border-white/10"
+        }`}
+      >
+        {/* Background photo + dark overlay, clipped to the rounded shape.
+          Kept in its own layer so the user dropdown is not clipped. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 overflow-hidden rounded-2xl"
         >
-          <span className="lg:hidden">
-            <Logo showText={false} />
-          </span>
-          <span className="hidden lg:inline">
-            <Logo />
-          </span>
-        </Link>
-
-        {/* Center: Home, the app links (desktop, logged-in), then About */}
-        <nav
-          ref={navRef}
-          className="relative flex items-center gap-1 md:justify-self-center"
-          aria-label="Primary"
-        >
-          <NavLink
-            to="/"
-            end
-            onClick={handleLogoClick}
-            className={centerLinkClass}
-          >
-            <Home
-              className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
-              aria-hidden="true"
-            />
-            Home
-          </NavLink>
-
-          <div className="hidden items-center gap-1 md:flex">
-            {APP_LINKS.map(({ to, label, icon: Icon }) => (
-              <NavLink key={to} to={to} className={linkClass} title={label}>
-                <Icon className="h-3.75 w-3.75" aria-hidden="true" />
-                {/* Labels show from xl up; smaller screens get icons only to save space */}
-                <span className="hidden xl:inline">{label}</span>
-                <span className="sr-only xl:hidden">{label}</span>
-              </NavLink>
-            ))}
-          </div>
-
-          <NavLink to="/about" className={centerLinkClass}>
-            <Info
-              className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
-              aria-hidden="true"
-            />
-            About
-          </NavLink>
-
-          <span
-            aria-hidden="true"
-            className={`pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-accent shadow-[0_0_10px_var(--color-accent)] ${
-              animate
-                ? "transition-[transform,width,opacity] duration-300 ease-out"
-                : ""
-            }`}
-            style={{
-              width: indicator.width,
-              transform: `translateX(${indicator.left}px)`,
-              opacity: indicator.visible ? 1 : 0,
-            }}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/nav-bg.jpg')" }}
           />
-        </nav>
+          <div className="absolute inset-0 bg-linear-to-r from-ink/90 via-ink/60 to-ink/90 backdrop-blur-[2px]" />
+          <div
+            className={`absolute inset-0 bg-ink transition-opacity duration-300 ${
+              scrolled ? "opacity-30" : "opacity-0"
+            }`}
+          />
+        </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
-          {isAuthenticated ? (
-            <UserMenu />
-          ) : (
-            <>
-              <span className="hidden sm:inline-flex">
-                <NavLink to="/login" className={linkClass}>
-                  Log in
+        <div className="flex h-16 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-5 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <Link
+            to="/"
+            onClick={handleLogoClick}
+            className={`${logoLinkClass} md:justify-self-start`}
+            aria-label={onLanding ? "Back to top" : "Go to home page"}
+          >
+            <span className="lg:hidden">
+              <Logo showText={false} />
+            </span>
+            <span className="hidden lg:inline">
+              <Logo />
+            </span>
+          </Link>
+
+          {/* Center: Home, the app links (desktop), then About */}
+          <nav
+            ref={navRef}
+            className="relative flex items-center gap-1 md:justify-self-center"
+            aria-label="Primary"
+          >
+            <NavLink
+              to="/"
+              end
+              onClick={handleLogoClick}
+              className={centerLinkClass}
+            >
+              <Home
+                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+                aria-hidden="true"
+              />
+              Home
+            </NavLink>
+
+            <div className="hidden items-center gap-1 md:flex">
+              {APP_LINKS.map(({ to, label, icon: Icon }) => (
+                <NavLink key={to} to={to} className={linkClass} title={label}>
+                  <Icon className="h-3.75 w-3.75" aria-hidden="true" />
+                  <span className="hidden xl:inline">{label}</span>
+                  <span className="sr-only xl:hidden">{label}</span>
                 </NavLink>
-              </span>
-              <Link to="/register" className="btn-accent py-2">
-                Get started
-              </Link>
-            </>
-          )}
+              ))}
+            </div>
+
+            <NavLink to="/about" className={centerLinkClass}>
+              <Info
+                className="h-4.5 w-4.5 sm:h-3.75 sm:w-3.75"
+                aria-hidden="true"
+              />
+              About
+            </NavLink>
+
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-accent shadow-[0_0_10px_var(--color-accent)] ${
+                animate
+                  ? "transition-[transform,width,opacity] duration-300 ease-out"
+                  : ""
+              }`}
+              style={{
+                width: indicator.width,
+                transform: `translateX(${indicator.left}px)`,
+                opacity: indicator.visible ? 1 : 0,
+              }}
+            />
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
+            {isAuthenticated ? (
+              <UserMenu />
+            ) : (
+              <>
+                <span className="hidden sm:inline-flex">
+                  <NavLink to="/login" className={loginClass}>
+                    Log in
+                  </NavLink>
+                </span>
+                <Link to="/register" className="btn-accent rounded-full py-2">
+                  Get started
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
