@@ -7,19 +7,20 @@ import Logo from "./Logo";
 import { APP_LINKS } from "./navLinks";
 import UserMenu from "./UserMenu";
 
+const inactiveLink =
+  "text-white/80 hover:text-white hover:[filter:drop-shadow(0_0_5px_rgba(255,255,255,0.45))]";
+const activeLink =
+  "text-accent hover:[filter:drop-shadow(0_0_5px_rgba(212,255,36,0.45))]";
+
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 rounded-xl px-3.5 py-2 font-nav text-[15px] font-medium tracking-[-0.01em] transition duration-200 ${
-    isActive
-      ? "text-accent"
-      : "text-white/80 hover:bg-white/10 hover:text-white"
+    isActive ? activeLink : inactiveLink
   }`;
 
 // Home / About links: icon on top with a small label on phones, icon + label in a row from sm up.
 const centerLinkClass = ({ isActive }) =>
   `flex flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1.5 font-nav text-[11px] font-medium tracking-[-0.01em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:flex-row sm:gap-2 sm:px-3.5 sm:py-2 sm:text-[15px] ${
-    isActive
-      ? "text-accent"
-      : "text-white/80 hover:bg-white/10 hover:text-white"
+    isActive ? activeLink : inactiveLink
   }`;
 
 const loginClass =
@@ -114,30 +115,12 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40">
       <div
-        className={`relative isolate rounded-b-2xl border-b bg-surface transition-[border-color,box-shadow] duration-300 ${
+        className={`rounded-b-2xl border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ${
           scrolled
-            ? "border-white/15 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
-            : "border-white/10"
+            ? "border-white/15 bg-ink/85 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
+            : "border-white/10 bg-ink/60"
         }`}
       >
-        {/* Background photo + light overlay, clipped to the rounded bottom.
-          Kept in its own layer so the user dropdown is not clipped. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 overflow-hidden rounded-b-2xl"
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/nav-bg.jpg')" }}
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-ink/55 via-ink/25 to-ink/55" />
-          <div
-            className={`absolute inset-0 bg-ink transition-opacity duration-300 ${
-              scrolled ? "opacity-40" : "opacity-0"
-            }`}
-          />
-        </div>
-
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           <Link
             to="/"
@@ -156,7 +139,7 @@ export default function Navbar() {
           {/* Center: Home, the app links (desktop), then About */}
           <nav
             ref={navRef}
-            className="relative flex items-center gap-1 [text-shadow:0_1px_10px_rgba(0,0,0,0.5)] md:justify-self-center"
+            className="relative flex items-center gap-1 md:justify-self-center"
             aria-label="Primary"
           >
             <NavLink
