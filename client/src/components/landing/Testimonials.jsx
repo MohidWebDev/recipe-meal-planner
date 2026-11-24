@@ -6,7 +6,7 @@ import Reveal from "./Reveal";
 const TESTIMONIALS = [
   {
     quote:
-      "I used to rewrite the same grocery list every Sunday. Now I plan the week in ten minutes and the list builds itself.",
+      "I used to rewrite the same grocery list every Sunday and still forget half of what I needed. Now I plan the whole week in about ten minutes, drop the recipes into the grid, and the shopping list builds itself. It has honestly taken the stress out of weeknight dinners for me.",
     name: "Ayesha K.",
     role: "Home cook",
     tag: "Weeknight dinners",
@@ -14,7 +14,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Merged ingredients are the best part. Two recipes with onions, and it is one line on my list.",
+      "Merged ingredients are the best part. When two recipes both need onions or rice, it shows up as one line on my list with the total amount, so I never buy double. Sharing a flat means every bit of budget counts, and this has cut down our food waste noticeably.",
     name: "Bilal R.",
     role: "Student sharing a flat",
     tag: "Meal prep",
@@ -22,7 +22,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "We stopped asking what is for dinner at six in the evening. It is already on the grid.",
+      "We stopped asking what is for dinner at six in the evening because the answer is already on the grid. Planning together on Sunday takes a few minutes, everyone can see what is coming up, and we waste far less food because we only buy what the week needs.",
     name: "Sana & Omar",
     role: "Cooking for a family",
     tag: "Family cooking",
@@ -30,11 +30,19 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "All my favourite recipes live in one place now, instead of screenshots and bookmarks.",
+      "All my favourite recipes finally live in one place instead of screenshots, bookmarks and notes scattered across my phone. I can search by ingredient, adjust the quantities for guests, and add a dish to the week in a couple of taps. It feels like my own personal cookbook.",
     name: "Hira M.",
     role: "Recipe collector",
     tag: "Favourite recipes",
     image: "/testimonials/4.webp",
+  },
+  {
+    quote:
+      "I host brunch for friends most weekends, and the planner makes it easy. I add the recipes, scale the servings for the number of guests, and the shopping list tells me exactly what to pick up in one trip. No more last-minute runs to the store for a forgotten ingredient.",
+    name: "Zain A.",
+    role: "Weekend brunch host",
+    tag: "Weekend brunch",
+    image: "/testimonials/5.webp",
   },
 ];
 
@@ -148,7 +156,7 @@ export default function Testimonials() {
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between gap-8 py-1 sm:pr-6">
-                  <blockquote className="font-display text-lg leading-[1.3] font-normal tracking-[-0.01em] text-fg lg:text-xl">
+                  <blockquote className="font-display text-[15px] leading-[1.55] font-normal text-fg lg:text-base">
                     “{quote}”
                   </blockquote>
                   <figcaption>
