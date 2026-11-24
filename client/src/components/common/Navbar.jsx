@@ -115,10 +115,10 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40">
       <div
-        className={`rounded-lg border backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ${
+        className={`rounded-lg backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ${
           scrolled
-            ? "border-white/15 bg-ink/85 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
-            : "border-white/10 bg-ink/60"
+            ? "border-white/15 bg-ink/35 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
+            : "border-white/10 bg-ink/35"
         }`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
