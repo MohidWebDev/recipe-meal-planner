@@ -1,139 +1,47 @@
-import { ArrowRight, Check, ShoppingCart } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import DemoButton from "../common/DemoButton";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const TODAY = 2; // Wed, highlighted in the mock
-
-// true = a recipe is planned in that slot
-const PLAN = [
-  { meal: "Breakfast", slots: [true, true, true, false, true, true, false] },
-  { meal: "Lunch", slots: [true, false, true, true, false, true, true] },
-  { meal: "Dinner", slots: [true, true, true, true, true, false, true] },
+const HIGHLIGHTS = [
+  { icon: BookOpen, label: "Save your recipes" },
+  { icon: CalendarDays, label: "Plan 7 days" },
+  { icon: ShoppingCart, label: "One shopping list" },
 ];
-
-const SHOPPING_PREVIEW = [
-  { name: "Chicken breast", qty: "600 g", done: true },
-  { name: "Basmati rice", qty: "2 cups", done: true },
-  { name: "Tomatoes", qty: "6", done: false },
-];
-
-function PlannerMock() {
-  return (
-    <div className="relative">
-      {/* Soft glow behind the card */}
-      <div
-        className="absolute -inset-6 -z-10 rounded-4xl bg-brand/25 blur-3xl"
-        aria-hidden="true"
-      />
-
-      <div className="card p-4 shadow-2xl shadow-black/40 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <p className="font-display text-sm font-semibold text-fg">
-            This week
-          </p>
-          <span className="badge-accent">17 meals planned</span>
-        </div>
-
-        <div className="grid grid-cols-[auto_repeat(7,minmax(0,1fr))] items-center gap-1.5 sm:gap-2">
-          {/* Day headers */}
-          <span aria-hidden="true" />
-          {DAYS.map((day, i) => (
-            <span
-              key={day}
-              className={`text-center text-[10px] font-semibold sm:text-xs ${
-                i === TODAY ? "text-accent" : "text-subtle"
-              }`}
-            >
-              {day}
-            </span>
-          ))}
-
-          {/* Meal rows */}
-          {PLAN.map(({ meal, slots }) => (
-            <MealRow key={meal} meal={meal} slots={slots} />
-          ))}
-        </div>
-      </div>
-
-      {/* Floating shopping list preview */}
-      <div className="card absolute -bottom-8 -left-2 hidden w-56 p-4 shadow-xl shadow-black/40 sm:block lg:-left-8">
-        <p className="mb-3 flex items-center gap-2 text-xs font-semibold text-fg">
-          <ShoppingCart
-            className="h-3.5 w-3.5 text-accent"
-            aria-hidden="true"
-          />
-          Shopping list
-        </p>
-        <ul className="space-y-2">
-          {SHOPPING_PREVIEW.map(({ name, qty, done }) => (
-            <li key={name} className="flex items-center gap-2 text-xs">
-              <span
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                  done
-                    ? "border-accent bg-accent text-ink"
-                    : "border-line-strong"
-                }`}
-                aria-hidden="true"
-              >
-                {done && <Check className="h-3 w-3" strokeWidth={3} />}
-              </span>
-              <span
-                className={`flex-1 truncate ${done ? "text-subtle line-through" : "text-muted"}`}
-              >
-                {name}
-              </span>
-              <span className="text-subtle">{qty}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-function MealRow({ meal, slots }) {
-  return (
-    <>
-      <span className="pr-1 text-[10px] font-medium text-subtle sm:pr-2 sm:text-xs">
-        <span className="sm:hidden">{meal[0]}</span>
-        <span className="hidden sm:inline">{meal}</span>
-      </span>
-      {slots.map((filled, i) => (
-        <span
-          key={i}
-          className={`h-7 rounded-md border sm:h-9 sm:rounded-lg ${
-            filled
-              ? i === TODAY
-                ? "border-accent/50 bg-accent/20"
-                : "border-brand/40 bg-brand/25"
-              : "border-line bg-raised"
-          }`}
-        />
-      ))}
-    </>
-  );
-}
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
-  return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 pt-16 pb-24 sm:px-6 sm:pt-20 lg:grid-cols-2 lg:gap-12 lg:pt-28 lg:pb-32">
-        {/* Copy */}
-        <div className="animate-fade-up">
-          <span className="badge-accent">
-            Recipes · Planner · Shopping list
-          </span>
 
-          <h1 className="mt-5 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-6xl">
+  return (
+    <section className="relative isolate -mt-17 flex min-h-[min(100svh,58rem)] flex-col justify-end overflow-hidden">
+      {/* Background photo */}
+      <img
+        src="/hero-bg.jpg"
+        alt=""
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+      />
+      {/* Overlays: darken the left for the text, fade into the page at the bottom */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-linear-to-r from-ink/80 via-ink/30 to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-linear-to-t from-ink via-ink/40 to-ink/30"
+      />
+
+      {/* Copy */}
+      <div className="mx-auto w-full max-w-7xl px-4 pt-32 pb-12 sm:px-6 sm:pb-16">
+        <div className="animate-fade-up">
+          <h1 className="max-w-3xl text-5xl leading-[1.02] font-normal tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
             Plan the week.
             <br />
             <span className="text-accent">Shop once.</span>
           </h1>
 
-          <p className="mt-5 max-w-xl text-base text-muted sm:text-lg">
+          <p className="mt-6 max-w-xl text-base text-white/75 sm:text-lg">
             Save your favourite recipes, drop them into a 7-day meal grid, and
             get one combined shopping list. No more guessing what is for dinner
             or what to buy.
@@ -157,15 +65,30 @@ export default function Hero() {
           </div>
 
           {!isAuthenticated && (
-            <p className="mt-4 text-xs text-subtle">
+            <p className="mt-4 text-xs text-white/55">
               Free to use · No credit card required
             </p>
           )}
         </div>
+      </div>
 
-        {/* Visual */}
-        <div className="animate-fade-up pb-8 [animation-delay:120ms] lg:pb-0">
-          <PlannerMock />
+      {/* Bottom strip: divider + highlights */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col gap-4 border-t border-white/15 py-6 md:flex-row md:items-center md:justify-between">
+          <p className="font-nav text-[11px] font-medium tracking-[0.16em] text-white/55 uppercase">
+            Everything in one place
+          </p>
+          <ul className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            {HIGHLIGHTS.map(({ icon: Icon, label }) => (
+              <li
+                key={label}
+                className="flex items-center gap-2 font-nav text-sm font-medium text-white/85"
+              >
+                <Icon className="h-4 w-4 text-accent" aria-hidden="true" />
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
