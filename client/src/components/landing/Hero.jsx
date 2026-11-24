@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import { ArrowRight, BookOpen, CalendarDays, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
@@ -11,16 +12,30 @@ const HIGHLIGHTS = [
 
 export default function Hero() {
   const { isAuthenticated } = useAuth();
+  const [imgLoaded, setImgLoaded] = useState(false);
+  // Covers the case where the image is already cached and finished loading.
+  const imgRef = useCallback((node) => {
+    if (node?.complete) setImgLoaded(true);
+  }, []);
 
   return (
     <section className="relative isolate -mt-17 flex min-h-[min(100svh,58rem)] flex-col justify-end overflow-hidden">
-      {/* Background photo */}
+      {/* Placeholder shown while the photo loads */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-30 bg-linear-to-br from-brand/25 via-surface to-ink"
+      />
+      {/* Background photo, fades in once loaded */}
       <img
-        src="/hero-bg.jpg"
+        ref={imgRef}
+        src="/hero-bg.webp"
         alt=""
         fetchPriority="high"
         decoding="async"
-        className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        onLoad={() => setImgLoaded(true)}
+        className={`absolute inset-0 -z-20 h-full w-full object-cover object-center transition-opacity duration-700 ${
+          imgLoaded ? "opacity-100" : "opacity-0"
+        }`}
       />
       {/* Overlays: darken the left for the text, fade into the page at the bottom */}
       <div
