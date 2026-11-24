@@ -1,5 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Carrot,
+  ChevronLeft,
+  ChevronRight,
+  Croissant,
+  Heart,
+  Soup,
+  UtensilsCrossed,
+} from "lucide-react";
 import Reveal from "./Reveal";
 
 // SAMPLE CONTENT: replace with real feedback from real users before launch.
@@ -10,6 +18,7 @@ const TESTIMONIALS = [
     name: "Ayesha K.",
     role: "Home cook",
     tag: "Weeknight dinners",
+    icon: Soup,
     image: "/testimonials/1.webp",
   },
   {
@@ -18,6 +27,7 @@ const TESTIMONIALS = [
     name: "Bilal R.",
     role: "Student sharing a flat",
     tag: "Meal prep",
+    icon: Carrot,
     image: "/testimonials/2.webp",
   },
   {
@@ -26,6 +36,7 @@ const TESTIMONIALS = [
     name: "Sana & Omar",
     role: "Cooking for a family",
     tag: "Family cooking",
+    icon: UtensilsCrossed,
     image: "/testimonials/3.webp",
   },
   {
@@ -34,6 +45,7 @@ const TESTIMONIALS = [
     name: "Hira M.",
     role: "Recipe collector",
     tag: "Favourite recipes",
+    icon: Heart,
     image: "/testimonials/4.webp",
   },
   {
@@ -42,6 +54,7 @@ const TESTIMONIALS = [
     name: "Zain A.",
     role: "Weekend brunch host",
     tag: "Weekend brunch",
+    icon: Croissant,
     image: "/testimonials/5.webp",
   },
 ];
@@ -174,7 +187,14 @@ export default function Testimonials() {
             style={{ transform: `translateX(${-(1 + pos) * step}px)` }}
           >
             {slots.map(({ idx, copy }) => {
-              const { quote, name, role, tag, image } = TESTIMONIALS[idx];
+              const {
+                quote,
+                name,
+                role,
+                tag,
+                icon: Icon,
+                image,
+              } = TESTIMONIALS[idx];
               return (
                 <li
                   key={`${idx}-${copy}`}
@@ -191,11 +211,16 @@ export default function Testimonials() {
                         decoding="async"
                         className="absolute inset-0 h-full w-full object-cover"
                       />
+                      {/* Soft fade only along the bottom, so the photo stays bright */}
                       <div
-                        className="absolute inset-0 bg-ink/60"
+                        className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-ink/90 via-ink/50 to-transparent"
                         aria-hidden="true"
                       />
-                      <p className="absolute inset-0 flex items-center justify-center px-4 text-center font-display text-xl leading-tight font-semibold text-balance text-accent">
+                      <p className="absolute inset-x-0 bottom-0 flex items-center gap-1.5 px-3 pb-3 font-nav text-xs leading-tight font-medium text-white">
+                        <Icon
+                          className="h-3.5 w-3.5 shrink-0 text-accent"
+                          aria-hidden="true"
+                        />
                         {tag}
                       </p>
                     </div>
