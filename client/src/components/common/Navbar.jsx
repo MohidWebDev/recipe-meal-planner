@@ -1,5 +1,5 @@
 import { Home, Info } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { scrollToTop } from "../../utils/smoothScroll";
@@ -9,17 +9,13 @@ import UserMenu from "./UserMenu";
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition duration-200 ${
-    isActive
-      ? "bg-accent/10 text-accent"
-      : "text-muted hover:bg-raised hover:text-fg"
+    isActive ? "text-accent" : "text-muted hover:bg-raised hover:text-fg"
   }`;
 
 // Home / About links: icon on top with a small label on phones, icon + label in a row from sm up.
 const centerLinkClass = ({ isActive }) =>
   `flex flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1.5 text-[11px] font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:flex-row sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm ${
-    isActive
-      ? "bg-accent/10 text-accent"
-      : "text-muted hover:bg-raised hover:text-fg"
+    isActive ? "text-accent" : "text-muted hover:bg-raised hover:text-fg"
   }`;
 
 const logoLinkClass =
@@ -29,6 +25,57 @@ export default function Navbar() {
   const { isAuthenticated } = useAuth();
   const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef(null);
+  const [indicator, setIndicator] = useState({
+    left: 0,
+    width: 0,
+    visible: false,
+  });
+  const [animate, setAnimate] = useState(false);
+
+  // Move the underline under whichever link is active.
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const update = () => {
+      const active = nav.querySelector('a[aria-current="page"]');
+      // No active link, or it is hidden at this screen size: hide the line.
+      if (!active || active.offsetWidth === 0) {
+        setIndicator((prev) =>
+          prev.visible ? { ...prev, visible: false } : prev,
+        );
+        return;
+      }
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = active.getBoundingClientRect();
+      const next = {
+        left: linkRect.left - navRect.left,
+        width: linkRect.width,
+        visible: true,
+      };
+      setIndicator((prev) =>
+        prev.left === next.left && prev.width === next.width && prev.visible
+          ? prev
+          : next,
+      );
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(nav);
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [pathname, isAuthenticated]);
+
+  // Turn the slide animation on only after the first paint, so the line doesn't fly in on load.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setAnimate(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   const onLanding = pathname === "/";
 
@@ -77,7 +124,8 @@ export default function Navbar() {
 
         {/* Center: Home, the app links (desktop, logged-in), then About */}
         <nav
-          className="flex items-center gap-1 md:justify-self-center"
+          ref={navRef}
+          className="relative flex items-center gap-1 md:justify-self-center"
           aria-label="Primary"
         >
           <NavLink
@@ -111,6 +159,20 @@ export default function Navbar() {
             />
             About
           </NavLink>
+
+          <span
+            aria-hidden="true"
+            className={`pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-accent shadow-[0_0_10px_var(--color-accent)] ${
+              animate
+                ? "transition-[transform,width,opacity] duration-300 ease-out"
+                : ""
+            }`}
+            style={{
+              width: indicator.width,
+              transform: `translateX(${indicator.left}px)`,
+              opacity: indicator.visible ? 1 : 0,
+            }}
+          />
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3 lg:justify-self-end">
