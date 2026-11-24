@@ -6,7 +6,7 @@ import Reveal from "./Reveal";
 export default function CtaBand() {
   const { isAuthenticated } = useAuth();
   return (
-    <section className="border-t border-line/60 py-20 sm:py-24">
+    <section className="py-20 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <Reveal className="relative overflow-hidden rounded-3xl border border-line-strong bg-surface px-6 py-14 text-center sm:px-12 sm:py-16">
           {/* Glows */}

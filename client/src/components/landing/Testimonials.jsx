@@ -134,10 +134,7 @@ export default function Testimonials() {
     "flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-line-strong text-muted transition duration-200 hover:border-accent/50 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
   return (
-    <section
-      id="testimonials"
-      className="border-t border-line/60 py-20 sm:py-24"
-    >
+    <section id="testimonials" className="py-20 sm:py-24">
       <Reveal className="mx-auto flex max-w-7xl items-end justify-between gap-4 px-4 sm:px-6">
         <div>
           <p className="flex items-center gap-2.5 font-nav text-xs text-muted">

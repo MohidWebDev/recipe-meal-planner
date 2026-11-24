@@ -24,10 +24,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section
-      id="how-it-works"
-      className="border-t border-line/60 py-20 sm:py-24"
-    >
+    <section id="how-it-works" className="py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">How it works</p>
