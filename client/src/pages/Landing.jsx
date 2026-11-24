@@ -6,6 +6,7 @@ import Loader from "../components/common/Loader";
 import Navbar from "../components/common/Navbar";
 import Hero from "../components/landing/Hero";
 import HowItWorks from "../components/landing/HowItWorks";
+import Testimonials from "../components/landing/Testimonials";
 import Features from "../components/landing/Features";
 import CtaBand from "../components/landing/CtaBand";
 import Footer from "../components/common/Footer";
@@ -49,6 +50,7 @@ export default function Landing() {
       <main id="main" tabIndex={-1} className="focus:outline-none">
         <Hero />
         <HowItWorks />
+        <Testimonials />
         <Features />
         <CtaBand />
       </main>
