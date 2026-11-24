@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Reveal from "./Reveal";
 
@@ -46,42 +46,79 @@ const TESTIMONIALS = [
   },
 ];
 
+const COUNT = TESTIMONIALS.length;
+const GAP = 12; // must match gap-3 on the track
+// Render a few extra repeated cards so wide screens never show an empty gap on the right.
+const SLOT_COUNT = Math.max(COUNT + 3, 8);
+
 // Lines the first card up with the page content (max-w-7xl + px-6) while the
 // carousel itself still runs to the screen edges, so neighbouring cards peek in.
 const EDGE_PADDING =
-  "pl-4 scroll-pl-4 sm:pl-[max(1.5rem,calc((100vw_-_80rem)/2_+_1.5rem))] sm:scroll-pl-[max(1.5rem,calc((100vw_-_80rem)/2_+_1.5rem))]";
+  "pl-4 sm:pl-[max(1.5rem,calc((100vw_-_80rem)/2_+_1.5rem))]";
 
 export default function Testimonials() {
   const trackRef = useRef(null);
-  const [edges, setEdges] = useState({ start: true, end: false });
+  const timerRef = useRef(null);
+  const dirRef = useRef(0); // 0 = resting, 1 = sliding to next, -1 = sliding to previous
+  const touchX = useRef(null);
 
-  const updateEdges = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    setEdges({
-      start: el.scrollLeft <= 4,
-      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
-    });
-  };
+  const [active, setActive] = useState(0); // index of the card at the start position
+  const [pos, setPos] = useState(0); // same as dirRef, but as state so it re-renders
+  const [step, setStep] = useState(0); // width of one card + gap, in px
 
-  useEffect(() => {
-    updateEdges();
-    window.addEventListener("resize", updateEdges);
-    return () => window.removeEventListener("resize", updateEdges);
+  // Measure one card so we know how far to slide.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const card = trackRef.current?.querySelector("[data-card]");
+      if (card) setStep(card.getBoundingClientRect().width + GAP);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
-  const scrollByCard = (direction) => {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector("[data-card]");
-    const step = card
-      ? card.getBoundingClientRect().width + 12
-      : el.clientWidth * 0.8;
-    el.scrollBy({ left: direction * step, behavior: "smooth" });
+  useEffect(() => () => window.clearTimeout(timerRef.current), []);
+
+  // After a slide: make the new card the "active" one and snap the track back
+  // to its resting position without animating, so the loop never runs out.
+  const finish = () => {
+    if (dirRef.current === 0) return;
+    window.clearTimeout(timerRef.current);
+    const dir = dirRef.current;
+    dirRef.current = 0;
+    setActive((a) => (a + dir + COUNT) % COUNT);
+    setPos(0);
   };
 
+  const go = (dir) => {
+    if (dirRef.current !== 0) return; // ignore clicks while a slide is running
+    dirRef.current = dir;
+    setPos(dir);
+    timerRef.current = window.setTimeout(finish, 700); // safety net
+  };
+
+  const handleTransitionEnd = (e) => {
+    if (e.target === e.currentTarget && e.propertyName === "transform")
+      finish();
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
+  };
+
+  // slot 0 is the previous card (sits just off to the left), slot 1 is the active one.
+  const seen = {};
+  const slots = Array.from({ length: SLOT_COUNT }, (_, k) => {
+    const idx = (active - 1 + k + COUNT * SLOT_COUNT) % COUNT;
+    seen[idx] = (seen[idx] || 0) + 1;
+    return { idx, copy: seen[idx] };
+  });
+
   const arrowClass =
-    "flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-line-strong text-muted transition duration-200 hover:border-accent/50 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-35";
+    "flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-line-strong text-muted transition duration-200 hover:border-accent/50 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
 
   return (
     <section
@@ -105,8 +142,7 @@ export default function Testimonials() {
         <div className="flex shrink-0 gap-2 pb-1.5">
           <button
             type="button"
-            onClick={() => scrollByCard(-1)}
-            disabled={edges.start}
+            onClick={() => go(-1)}
             className={arrowClass}
             aria-label="Previous testimonial"
           >
@@ -114,8 +150,7 @@ export default function Testimonials() {
           </button>
           <button
             type="button"
-            onClick={() => scrollByCard(1)}
-            disabled={edges.end}
+            onClick={() => go(1)}
             className={arrowClass}
             aria-label="Next testimonial"
           >
@@ -125,51 +160,63 @@ export default function Testimonials() {
       </Reveal>
 
       <Reveal delay={120}>
-        <ul
-          ref={trackRef}
-          onScroll={updateEdges}
-          className={`mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto pr-4 pb-2 scrollbar-none sm:pr-6 [&::-webkit-scrollbar]:hidden ${EDGE_PADDING}`}
+        <div
+          className={`mt-10 touch-pan-y overflow-hidden ${EDGE_PADDING}`}
+          onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+          onTouchEnd={handleTouchEnd}
         >
-          {TESTIMONIALS.map(({ quote, name, role, tag, image }) => (
-            <li
-              key={name}
-              data-card
-              className="w-[85%] shrink-0 snap-start sm:w-120 lg:w-160"
-            >
-              <figure className="flex h-full flex-col gap-4 bg-overlay p-3 sm:min-h-64 sm:flex-row sm:gap-6">
-                {/* Photo tile with the label centered on top, like a logo card */}
-                <div className="relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-40 lg:w-44">
-                  <img
-                    src={image}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
-                  />
-                  <div
-                    className="absolute inset-0 bg-ink/60"
-                    aria-hidden="true"
-                  />
-                  <p className="absolute inset-0 flex items-center justify-center px-4 text-center font-display text-xl leading-tight font-semibold text-balance text-accent">
-                    {tag}
-                  </p>
-                </div>
+          <ul
+            ref={trackRef}
+            onTransitionEnd={handleTransitionEnd}
+            className={`flex gap-3 will-change-transform ${
+              pos !== 0 ? "transition-transform duration-500 ease-out" : ""
+            }`}
+            style={{ transform: `translateX(${-(1 + pos) * step}px)` }}
+          >
+            {slots.map(({ idx, copy }) => {
+              const { quote, name, role, tag, image } = TESTIMONIALS[idx];
+              return (
+                <li
+                  key={`${idx}-${copy}`}
+                  data-card
+                  aria-hidden={copy > 1 || undefined}
+                  className="w-[85%] shrink-0 sm:w-120 lg:w-160"
+                >
+                  <figure className="flex h-full flex-col gap-4 bg-overlay p-3 sm:min-h-64 sm:flex-row sm:gap-6">
+                    {/* Photo tile with the label centered on top, like a logo card */}
+                    <div className="relative h-48 w-full shrink-0 overflow-hidden sm:h-auto sm:w-40 lg:w-44">
+                      <img
+                        src={image}
+                        alt=""
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                      <div
+                        className="absolute inset-0 bg-ink/60"
+                        aria-hidden="true"
+                      />
+                      <p className="absolute inset-0 flex items-center justify-center px-4 text-center font-display text-xl leading-tight font-semibold text-balance text-accent">
+                        {tag}
+                      </p>
+                    </div>
 
-                <div className="flex flex-1 flex-col justify-between gap-8 py-1 sm:pr-6">
-                  <blockquote className="font-display text-[15px] leading-[1.55] font-normal text-fg lg:text-base">
-                    “{quote}”
-                  </blockquote>
-                  <figcaption>
-                    <p className="font-nav text-xs font-semibold text-fg">
-                      {name}
-                    </p>
-                    <p className="mt-1 text-xs text-subtle">{role}</p>
-                  </figcaption>
-                </div>
-              </figure>
-            </li>
-          ))}
-        </ul>
+                    <div className="flex flex-1 flex-col justify-between gap-8 py-1 sm:pr-6">
+                      <blockquote className="font-display text-[15px] leading-[1.55] font-normal text-fg lg:text-base">
+                        “{quote}”
+                      </blockquote>
+                      <figcaption>
+                        <p className="font-nav text-xs font-semibold text-fg">
+                          {name}
+                        </p>
+                        <p className="mt-1 text-xs text-subtle">{role}</p>
+                      </figcaption>
+                    </div>
+                  </figure>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </Reveal>
     </section>
   );
