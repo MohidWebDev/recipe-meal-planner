@@ -8,9 +8,9 @@ import { APP_LINKS } from "./navLinks";
 import UserMenu from "./UserMenu";
 
 const inactiveLink =
-  "text-white/80 hover:text-white hover:[filter:drop-shadow(0_0_5px_rgba(255,255,255,0.45))]";
+  "text-white/80 hover:text-white hover:[filter:drop-shadow(0_0_2px_rgba(255,255,255,0.5))]";
 const activeLink =
-  "text-accent hover:[filter:drop-shadow(0_0_5px_rgba(212,255,36,0.45))]";
+  "text-accent [filter:drop-shadow(0_0_2px_rgba(212,255,36,0.5))]";
 
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 rounded-xl px-3.5 py-2 font-nav text-[15px] font-medium tracking-[-0.01em] transition duration-200 ${
@@ -115,7 +115,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40">
       <div
-        className={`rounded-b-2xl border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ${
+        className={`rounded-lg border backdrop-blur-xl transition-[background-color,border-color,box-shadow] duration-300 ${
           scrolled
             ? "border-white/15 bg-ink/85 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]"
             : "border-white/10 bg-ink/60"
@@ -175,7 +175,7 @@ export default function Navbar() {
 
             <span
               aria-hidden="true"
-              className={`pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-accent shadow-[0_0_10px_var(--color-accent)] ${
+              className={`pointer-events-none absolute bottom-0 left-0 h-0.5 rounded-full bg-accent shadow-[0_0_5px_var(--color-accent)] ${
                 animate
                   ? "transition-[transform,width,opacity] duration-300 ease-out"
                   : ""
