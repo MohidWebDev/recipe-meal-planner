@@ -1,4 +1,4 @@
-import { BookOpen, Plus, SearchX } from "lucide-react";
+import { Plus, SearchX } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getErrorMessage } from "../api/axios";
@@ -9,6 +9,7 @@ import Pagination from "../components/common/Pagination";
 import RecipeCard from "../components/recipes/RecipeCard";
 import RecipeCardSkeleton from "../components/recipes/RecipeCardSkeleton";
 import RecipeFilters from "../components/recipes/RecipeFilters";
+import RecipesEmpty from "../components/recipes/RecipesEmpty";
 import useDebounce from "../hooks/useDebounce";
 import { scrollToTop } from "../utils/smoothScroll";
 
@@ -50,6 +51,7 @@ export default function Recipes() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
 
   const updateParams = (updates, { resetPage = true } = {}) => {
     setSearchParams(
@@ -111,7 +113,7 @@ export default function Recipes() {
       ignore = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryKey]);
+  }, [queryKey, reloadKey]);
 
   const handleFilterChange = (changes) => {
     if ("ingredient" in changes) {
@@ -195,16 +197,7 @@ export default function Recipes() {
             }
           />
         ) : (
-          <EmptyState
-            icon={BookOpen}
-            title="No recipes yet"
-            message="Add your first recipe and start planning your week."
-            action={
-              <Link to="/recipes/new" className="btn-accent">
-                <Plus className="h-4 w-4" aria-hidden="true" /> Add a recipe
-              </Link>
-            }
-          />
+          <RecipesEmpty onLoaded={() => setReloadKey((key) => key + 1)} />
         ))
       ) : (
         <>
