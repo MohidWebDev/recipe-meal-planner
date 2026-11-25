@@ -98,7 +98,7 @@ function RecipesArt() {
         />
       </label>
 
-      <ul className="mt-2 min-h-[10.75rem] space-y-2" aria-live="polite">
+      <ul className="mt-2 min-h-43 space-y-2" aria-live="polite">
         {visible.map(({ name, meta, tag }) => (
           <li
             key={name}
